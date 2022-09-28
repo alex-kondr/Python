@@ -1,11 +1,12 @@
 def checkio(array: list[int]) -> int:
     # your code here
     sum = 0
-
+    
     for i in range(0, len(array), 2):
         sum += array[i]
-        
-    return None
+    
+
+    return sum * array[len(array) - 1] if array else sum
 
 
 print("Example:")
