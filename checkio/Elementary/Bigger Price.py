@@ -4,25 +4,29 @@ def bigger_price(limit: int, data: list[dict]) -> list[dict]:
     """
     # your code here
     
-    data_temp = data.copy()    
+    data_temp = data.copy()
+    price_bigger = []    
 
     def bigger_item(data: list[dict]):
-        bigger_list = {}
+
         price = 0
 
         for item in data:
 
             if price < item["price"]:
                 price = item["price"]
-                bigger_list = item
+                bigger_dict = item
 
-        return bigger_list 
+        return bigger_dict 
 
-    bigger_item1 = bigger_item(data_temp)
-    
+    for i in range(limit):
 
-    return []
+        bigger_item_temp = bigger_item(data_temp)
+        data_temp.remove(bigger_item_temp)
 
+        price_bigger.append(bigger_item_temp)    
+
+    return price_bigger
 
 print("Example:")
 print(
