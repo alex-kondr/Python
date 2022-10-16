@@ -1,120 +1,147 @@
 from pathlib import Path
-import sys, os
+import sys
+import os
 import shutil
 
 
 folder_sort = Path(sys.argv[1])
 
-types_file = {"archives": ('ZIP', 'GZ', 'TAR', 'RAR'),
+types_file = {"archives": ('ZIP', 'GZ', 'TAR'),
               "documents": ('DOC', 'DOCX', 'TXT', 'PDF', 'XLSX', 'PPTX'),
               "audio": ('MP3', 'OGG', 'WAV', 'AMR'),
               "images": ('JPEG', 'PNG', 'JPG', 'SVG'),
               "video": ('AVI', 'MP4', 'MOV', 'MKV'),
               "unknown_type_file": ""}
 
-upper_case_letters = {  'А': 'A',
-                        'Б': 'B',
-                        'В': 'V',
-                        'Г': 'G',
-                        'Д': 'D',
-                        'Е': 'E',
-                        'Ё': 'E',
-                        'Ж': 'Zh',
-                        'З': 'Z',
-                        'И': 'I',
-                        'І': 'I',
-                        'Ї': 'YI',
-                        'Й': 'Y',
-                        'К': 'K',
-                        'Л': 'L',
-                        'М': 'M',
-                        'Н': 'N',
-                        'О': 'O',
-                        'П': 'P',
-                        'Р': 'R',
-                        'С': 'S',
-                        'Т': 'T',
-                        'У': 'U',
-                        'Ф': 'F',
-                        'Х': 'H',
-                        'Ц': 'Ts',
-                        'Ч': 'Ch',
-                        'Ш': 'Sh',
-                        'Щ': 'Sch',
-                        'Ъ': '',
-                        'Ы': 'Y',
-                        'Ь': '',
-                        'Э': 'E',
-                        'Ю': 'Yu',
-                        'Я': 'Ya'}
+upper_case_letters = {'А': 'A',
+                      'Б': 'B',
+                      'В': 'V',
+                      'Г': 'G',
+                      'Д': 'D',
+                      'Е': 'E',
+                      'Ё': 'E',
+                      'Ж': 'Zh',
+                      'З': 'Z',
+                      'И': 'I',
+                      'І': 'I',
+                      'Ї': 'YI',
+                      'Й': 'Y',
+                      'К': 'K',
+                      'Л': 'L',
+                      'М': 'M',
+                      'Н': 'N',
+                      'О': 'O',
+                      'П': 'P',
+                      'Р': 'R',
+                      'С': 'S',
+                      'Т': 'T',
+                      'У': 'U',
+                      'Ф': 'F',
+                      'Х': 'H',
+                      'Ц': 'Ts',
+                      'Ч': 'Ch',
+                      'Ш': 'Sh',
+                      'Щ': 'Sch',
+                      'Ъ': '',
+                      'Ы': 'Y',
+                      'Ь': '',
+                      'Э': 'E',
+                      'Ю': 'Yu',
+                      'Я': 'Ya'}
 
-lower_case_letters = {  'а': 'a',
-                        'б': 'b',
-                        'в': 'v',
-                        'г': 'g',
-                        'д': 'd',
-                        'е': 'e',
-                        'ё': 'e',
-                        'ж': 'zh',
-                        'з': 'z',
-                        'и': 'i',
-                        'і': 'i',
-                        'ї': 'yi',
-                        'й': 'y',
-                        'к': 'k',
-                        'л': 'l',
-                        'м': 'm',
-                        'н': 'n',
-                        'о': 'o',
-                        'п': 'p',
-                        'р': 'r',
-                        'с': 's',
-                        'т': 't',
-                        'у': 'u',
-                        'ф': 'f',
-                        'х': 'h',
-                        'ц': 'ts',
-                        'ч': 'ch',
-                        'ш': 'sh',
-                        'щ': 'sch',
-                        'ъ': '',
-                        'ы': 'y',
-                        'ь': '',
-                        'э': 'e',
-                        'ю': 'yu',
-                        'я': 'ya'}
+lower_case_letters = {'а': 'a',
+                      'б': 'b',
+                      'в': 'v',
+                      'г': 'g',
+                      'д': 'd',
+                      'е': 'e',
+                      'ё': 'e',
+                      'ж': 'zh',
+                      'з': 'z',
+                      'и': 'i',
+                      'і': 'i',
+                      'ї': 'yi',
+                      'й': 'y',
+                      'к': 'k',
+                      'л': 'l',
+                      'м': 'm',
+                      'н': 'n',
+                      'о': 'o',
+                      'п': 'p',
+                      'р': 'r',
+                      'с': 's',
+                      'т': 't',
+                      'у': 'u',
+                      'ф': 'f',
+                      'х': 'h',
+                      'ц': 'ts',
+                      'ч': 'ch',
+                      'ш': 'sh',
+                      'щ': 'sch',
+                      'ъ': '',
+                      'ы': 'y',
+                      'ь': '',
+                      'э': 'e',
+                      'ю': 'yu',
+                      'я': 'ya'}
 
 
-def create_folders():
+def create_folders() -> dict:
+    """Creates folders on type"""
+
+    dict_on_type = {}
 
     for name_type_file in types_file:
         name_type_folder = Path(f"{folder_sort}/{name_type_file}")
-        
+
         if not name_type_folder.exists():
-            os.mkdir(name_type_folder)
-            print(f"Create {name_type_folder}")
+            dict_on_type.update({name_type_file: []})
 
-def find_type_file(file):
+            if not name_type_file == "unknown_type_file":
+                os.mkdir(name_type_folder)            
+                print(f"Create {name_type_folder}")
 
-    for name_type_file, type_file in types_file.items():              
+    return dict_on_type
+
+
+def find_type_file(file: Path) -> str:
+    """Finds the file type and returns its name"""
+
+    for name_type_file, type_file in types_file.items():
 
         if file.suffix[1:].upper() in type_file:
             return name_type_file
 
     return "unknown_type_file"
 
-def move_file(file, new_name, type_file):
-  
+
+def move_file(file: Path, new_name: str, type_file: str) -> Path:
+    """Moving file on its type and rename on [new_name]"""
+
     move_path = Path(f"{folder_sort}/{type_file}")
 
     if Path(f"{move_path}/{file.name}").exists():
         print(f"{move_path}/{file.name} already exists")
-    
-    else:
-        shutil.move(file, f"{move_path}/{new_name}{file.suffix}")
-        print(f"{file} moved to {move_path}/{new_name}{file.suffix}")
 
-def normalize(name_file):
+    elif type_file == "archives":
+        new_file = file
+        shutil.unpack_archive(file, f"{move_path}/{just_name_file(file)}")
+        print(f"Unpack {file} to arhives")
+
+    else:
+        new_file = shutil.move(file, f"{move_path}/{new_name}{file.suffix}")
+        print(f"{file} moved to {new_file}")
+
+    return new_file
+
+
+def just_name_file(file: str) -> str:
+    name = file.name.removesuffix(file.suffix)
+    return name
+
+
+def normalize(name_file: str) -> str:
+    """Normalize name file"""
 
     normalize_name = ""
 
@@ -125,7 +152,7 @@ def normalize(name_file):
 
         elif char in lower_case_letters:
             char = lower_case_letters[char]
-        
+
         elif not char.isdigit() and not char.isalpha():
             char = "_"
 
@@ -133,8 +160,19 @@ def normalize(name_file):
 
     return normalize_name
 
-def sort_file_in_folder(folder):    
+def rm_empty_dir(dir: Path):
 
+    for element in dir.iterdir():
+        if element.is_dir():
+            if not len(os.listdir(element)):
+                shutil.rmtree(element)
+                continue
+            rm_empty_dir(element)
+
+
+def sort_file_in_folder(folder: Path, list_file_on_type: dict, unknown_extensions: list) -> dict:
+    """Sortes files on its type on folder and unpack archives"""
+    
     for element in folder.iterdir():
 
         if element.is_dir():
@@ -143,19 +181,44 @@ def sort_file_in_folder(folder):
 
             new_name = normalize(element.name)
             print(f"{element} rename by {new_name}")
-            element = Path(shutil.move(element, f"{element.parent}/{new_name}")) 
-            sort_file_in_folder(element)
+            element = Path(shutil.move(
+                element, f"{element.parent}/{new_name}"))
+            sort_file_in_folder(element, list_file_on_type, unknown_extensions)
 
         else:
 
-            name_file = element.name.removesuffix(element.suffix)
+            name_file = just_name_file(element)
             new_name = normalize(name_file)
             type_file = find_type_file(element)
-            move_file(element, new_name, type_file)
-    
+
+            if type_file == "unknown_type_file":
+                unknown_extensions.append(element.suffix[1:])
+                new_file = element
+            else:
+                new_file = Path(move_file(element, new_name, type_file))
+
+            list_file_on_type[type_file].append(new_file.name)
+
+    return list_file_on_type, unknown_extensions
+
 
 if __name__ == "__main__":
 
-    create_folders()
-    sort_file_in_folder(folder_sort)
+    unknown_extensions = []
+
+    list_file_on_type = create_folders()
+    list_file_on_type, unknown_extensions = sort_file_in_folder(
+        folder_sort, list_file_on_type, unknown_extensions)
+
+    list_of_extensions = {"known_type": [],
+                          "unknown_type": set(unknown_extensions)}
+    for extensions in types_file.values():
+        if extensions:
+            list_of_extensions['known_type'] += extensions
+
+    rm_empty_dir(folder_sort)
+    print("Deleted empty folders")
+
+    print(f"list_file_on_type: {list_file_on_type}")
+    print(f"list_of_extensions: {list_of_extensions}")
     print("Done")
