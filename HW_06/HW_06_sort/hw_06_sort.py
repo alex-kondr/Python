@@ -1,7 +1,6 @@
+import shutil, sys
 from pathlib import Path
 from translit_letters import *
-import os, shutil, sys
-
 
    
 folder_sort = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("*")
@@ -10,26 +9,21 @@ types_file = {"archives": ('ZIP', 'GZ', 'TAR'),
               "documents": ('DOC', 'DOCX', 'TXT', 'PDF', 'XLSX', 'PPTX'),
               "audio": ('MP3', 'OGG', 'WAV', 'AMR'),
               "images": ('JPEG', 'PNG', 'JPG', 'SVG'),
-              "video": ('AVI', 'MP4', 'MOV', 'MKV'),
-              "unknown_type_file": ""}
+              "video": ('AVI', 'MP4', 'MOV', 'MKV')}
 
 def create_folders() -> dict:
     """Creates folders on type"""
 
-    dict_on_type = {}
+    dict_on_type = {"unknown_type_file": []}
 
     for name_type_file in types_file:
-        name_type_folder = Path(folder_sort).joinpath(name_type_file)
 
-        if not name_type_folder.exists():
-            dict_on_type.update({name_type_file: []})
-
-            if name_type_file != "unknown_type_file":
-                os.mkdir(name_type_folder)            
-                print(f"Create {name_type_folder}")
+        name_type_folder = folder_sort.joinpath(name_type_file)
+        dict_on_type.update({name_type_file: []})
+        name_type_folder.mkdir(exist_ok=True)
+        print(f"Create {name_type_folder}")
 
     return dict_on_type
-
 
 def find_type_file(file: Path) -> str:
     """Finds the file type and returns its name"""
@@ -45,40 +39,39 @@ def find_type_file(file: Path) -> str:
 def move_file(file: Path, new_name: str, type_file: str) -> Path:
     """Moving file on its type and rename on [new_name]"""
 
-    move_path = Path(folder_sort).joinpath(type_file)
+    move_path = folder_sort.joinpath(type_file)
 
-    if Path(move_path).joinpath(file.name).exists():
-        print(f"{move_path}/{file.name} already exists")
+    if move_path.joinpath(file.name).exists():
+        print(f"{move_path.joinpath(file.name)} already exists")
 
     elif type_file == "archives":
         new_file = file
-        shutil.unpack_archive(file, f"{move_path}/{just_name_file(file)}")
-        print(f"Unpack {file} to arhives")
+        shutil.unpack_archive(file, move_path.joinpath(just_name_file(file)))
+        print(f"Unpack {file} to {type_file}")
 
     else:
-        new_file = shutil.move(file, os.path.join(move_path, f"{new_name}{file.suffix}"))
+        new_file = file.rename(move_path.joinpath(new_name + file.suffix))
         print(f"{file} moved to {new_file}")
 
     return new_file
-
 
 def just_name_file(file: str) -> str:
     name = file.name.removesuffix(file.suffix)
     return name
 
 def main():
-
     unknown_extensions = []
 
     list_file_on_type = create_folders()
-    list_file_on_type, unknown_extensions = sort_file_in_folder(
-        folder_sort, list_file_on_type, unknown_extensions)
+    list_file_on_type, unknown_extensions = sort_file_in_folder(folder_sort, 
+                                                                list_file_on_type, 
+                                                                unknown_extensions)
 
     list_of_extensions = {"known_type": [],
-                         "unknown_type": set(unknown_extensions)}
+                          "unknown_type": set(unknown_extensions)}
+
     for extensions in types_file.values():
-        if extensions:
-            list_of_extensions['known_type'] += extensions
+        list_of_extensions['known_type'] += extensions
 
     rm_empty_dir(folder_sort)
     print("Deleted empty folders")
@@ -112,10 +105,11 @@ def rm_empty_dir(dir: Path):
 
     for element in dir.iterdir():
         if element.is_dir():
-            if not len(os.listdir(element)):
-                shutil.rmtree(element)
-                continue
-            rm_empty_dir(element)
+            try:
+                element.rmdir()
+                print(f"Deleted folder {element}")
+            except OSError:
+                rm_empty_dir(element)
 
 
 def sort_file_in_folder(folder: Path, list_file_on_type: dict, unknown_extensions: list):
@@ -129,8 +123,7 @@ def sort_file_in_folder(folder: Path, list_file_on_type: dict, unknown_extension
 
             new_name = normalize(element.name)
             print(f"{element} rename by {new_name}")
-            element = Path(shutil.move(
-                element, f"{element.parent}/{new_name}"))
+            element = element.rename(element.parent.joinpath(new_name))
             sort_file_in_folder(element, list_file_on_type, unknown_extensions)
 
         else:
@@ -143,7 +136,7 @@ def sort_file_in_folder(folder: Path, list_file_on_type: dict, unknown_extension
                 unknown_extensions.append(element.suffix[1:])
                 new_file = element
             else:
-                new_file = Path(move_file(element, new_name, type_file))
+                new_file = move_file(element, new_name, type_file)
 
             list_file_on_type[type_file].append(new_file.name)
 
