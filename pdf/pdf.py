@@ -1,8 +1,9 @@
 import PyPDF2
 
-input_file = "1.pdf"
+# input_file = "1.pdf"
+input_file = "pdf_test.pdf"
 output_file = "11.pdf"
-mark_file = "mark_txt.pdf"
+mark_file = "kep_vh.pdf"
 
 with open(input_file, "rb") as file_input:
 
