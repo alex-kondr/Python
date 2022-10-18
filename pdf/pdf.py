@@ -1,24 +1,56 @@
-import PyPDF2
+from datetime import datetime
+from fpdf import FPDF
+from PyPDF2 import PdfFileReader, PdfFileWriter
 
-# input_file = "1.pdf"
-input_file = "pdf_test.pdf"
-output_file = "11.pdf"
-mark_file = "kep_vh.pdf"
 
-with open(input_file, "rb") as file_input:
+input_file = "1.pdf"
+output_file = "output.pdf"
+stamp = "stamp.pdf"
+entry_number = "entry_number.pdf"
 
-    pdf = PyPDF2.PdfFileReader(file_input)
+def main():
 
-    with open(mark_file, "rb") as file_mark:
-        mark = PyPDF2.PdfFileReader(file_mark)
+    number = input("Enter the entry number: ")
+    date = datetime.today().strftime("%d.%m.%Y")
 
-        first_page = pdf.getPage(0)
-        first_page_mark = mark.getPage(0)
+    entry_number_date = f'{number}/{date[:-3:-1]}-Вх                {date} р.'
 
-        first_page.mergePage(first_page_mark)
+    txt_to_pdf(entry_number_date)
+    merge_pdf(input_file, stamp)
+    merge_pdf(output_file, entry_number)
 
-        pdf_writer = PyPDF2.PdfFileWriter()
-        pdf_writer.addPage(first_page)
 
-        with open(output_file, "wb") as file_output:
-            pdf_writer.write(file_output)
+def merge_pdf(pdf1, pdf2):
+
+    with open(pdf1, "rb") as input1:
+        input1 = PdfFileReader(input1)
+
+        with open(pdf2, "rb") as input2:
+            input2 = PdfFileReader(input2)
+
+            input1 = input1.getPage(0)
+            input2 = input2.getPage(0)
+
+            input1.mergePage(input2)
+
+            output = PdfFileWriter()
+            output.addPage(input1)
+
+            with open(output_file, "wb") as file_output:
+                output.write(file_output)
+
+def txt_to_pdf(txt):
+    pdf = FPDF()
+    pdf.add_page()
+
+    pdf.add_font("Times New Roman", "", 
+                 "font/Times New Roman/times new roman bold.ttf", uni=True)
+
+    pdf.set_font("Times New Roman", size=9)
+    pdf.cell(180, 241, ln=1)
+    pdf.cell(188, 0, txt=txt, ln=1, align="R")
+
+    pdf.output("entry_number.pdf")
+
+if __name__ == "__main__":
+    main()
