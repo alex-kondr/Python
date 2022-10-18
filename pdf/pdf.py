@@ -1,10 +1,11 @@
 from datetime import datetime
 from fpdf import FPDF
+from os import remove
 from PyPDF2 import PdfFileReader, PdfFileWriter
 
 
 input_file = "1.pdf"
-output_file = "output.pdf"
+# output_file = "output.pdf"
 stamp = "stamp.pdf"
 entry_number = "entry_number.pdf"
 
@@ -16,8 +17,10 @@ def main():
     entry_number_date = f'{number}/{date[:-3:-1]}-Вх                {date} р.'
 
     txt_to_pdf(entry_number_date)
-    merge_pdf(input_file, stamp)
-    merge_pdf(output_file, entry_number)
+    time = merge_pdf(input_file, stamp)
+    merge_pdf(f"output{time}.pdf" , entry_number)
+    remove("entry_number.pdf")
+    remove(f"output{time}.pdf")
 
 
 def merge_pdf(pdf1, pdf2):
@@ -30,14 +33,14 @@ def merge_pdf(pdf1, pdf2):
 
             input1 = input1.getPage(0)
             input2 = input2.getPage(0)
-
             input1.mergePage(input2)
 
             output = PdfFileWriter()
             output.addPage(input1)
-
-            with open(output_file, "wb") as file_output:
-                output.write(file_output)
+            time = datetime.now().strftime("%H.%M.%S")
+            output.write(f"output{time}.pdf")
+            
+    return time
 
 def txt_to_pdf(txt):
     pdf = FPDF()
