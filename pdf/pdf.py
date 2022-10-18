@@ -1,24 +1,33 @@
 from datetime import datetime
+from secrets import choice
 from fpdf import FPDF
 from os import remove
 from PyPDF2 import PdfFileReader, PdfFileWriter
 
 
-input_file = "1.pdf"
-kep_vh_bottom = "D:/Кондратюк/Личные/Печатка/КЕП+Вх знизу.pdf"
-kep_top_vh_bottom = "D:/Кондратюк/Личные/Печатка/КЕП зверху"
-+Вх знизу.pdf"
 entry_number = "entry_number.pdf"
+input_file = "1.pdf"
+stamp = ["D:/Кондратюк/Личные/Печатка/КЕП+Вх знизу.pdf",
+         "D:/Кондратюк/Личные/Печатка/КЕП зверху+Вх знизу.pdf",
+         "D:/Кондратюк/Личные/Печатка/КЕП+ЕП знизу.pdf",
+         "D:/Кондратюк/Личные/Печатка/КЕП зверху+ЕП знизу.pdf"]
+
 
 def main():
 
-    number = input("Enter the entry number: ")
+    number = input("Введіть вхідний номер: ")
+    print("Виберіть варіант штампу")
+
+    for i in stamp:
+        print(f"i: {stamp[i]}")
+
+    choice_stamp = int(input("Варіант: "))
     date = datetime.today().strftime('"%d".%m.%Y')
 
     entry_number_date = f'{number}/{date[:-3:-1]}-Вх                {date} р.'
 
     txt_to_pdf(entry_number_date)
-    merge_pdf(input_file, stamp, entry_number)
+    merge_pdf(input_file, stamp[choice_stamp], entry_number)
     remove("entry_number.pdf")
 
 def merge_pdf(pdf1, pdf2, pdf3):
