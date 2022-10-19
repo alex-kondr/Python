@@ -46,7 +46,7 @@ def move_file(file: Path, new_name: str, type_file: str) -> Path:
 
     elif type_file == "archives":
         new_file = file
-        shutil.unpack_archive(file, move_path.joinpath(just_name_file(file)))
+        shutil.unpack_archive(file, move_path.joinpath(file.stem))
         print(f"Unpack {file} to {type_file}")
 
     else:
@@ -54,10 +54,6 @@ def move_file(file: Path, new_name: str, type_file: str) -> Path:
         print(f"{file} moved to {new_file}")
 
     return new_file
-
-def just_name_file(file: str) -> str:
-    name = file.name.removesuffix(file.suffix)
-    return name
 
 def main():
     unknown_extensions = []
@@ -127,14 +123,14 @@ def sort_file_in_folder(folder: Path, list_file_on_type: dict, unknown_extension
             sort_file_in_folder(element, list_file_on_type, unknown_extensions)
 
         else:
-
-            name_file = just_name_file(element)
+            name_file = element.stem
             new_name = normalize(name_file)
             type_file = find_type_file(element)
 
             if type_file == "unknown_type_file":
                 unknown_extensions.append(element.suffix[1:])
-                new_file = element
+                new_file = element.rename(element.parent.joinpath(new_name + element.suffix))
+                
             else:
                 new_file = move_file(element, new_name, type_file)
 
