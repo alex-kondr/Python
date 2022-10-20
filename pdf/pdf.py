@@ -24,13 +24,13 @@ def find_file():
 def main():
 
     input_file = find_file()
-    file_name = input_file.name
 
     if not input_file:
         print("Файл не знайдений")
         input("Натисніть ентер для закриття")
         quit()
-
+      
+    file_name = input_file.name
     number = input("Введіть вхідний номер: ")
     print("Виберіть варіант штампу")
 
@@ -38,9 +38,6 @@ def main():
         print(f"{i}: {value}")
 
     number_stamp = input("Варіант: ")
-    
-    
-
     stamp = TEMP_FOLDER.joinpath(STAMP[number_stamp])
     date = datetime.today().strftime('"%d"  %m  %Y')
 
