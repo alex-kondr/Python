@@ -1,39 +1,72 @@
 from datetime import datetime
-from secrets import choice
 from fpdf import FPDF
 from os import remove
-from PyPDF2 import PdfFileReader, PdfFileWriter
+from pathlib import Path
+from PyPDF2 import PdfFileReader, PdfFileWriter, PdfMerger
+import pikepdf
 
 
-entry_number = "entry_number.pdf"
-input_file = "1.pdf"
-stamp = ["D:/Кондратюк/Личные/Печатка/КЕП+Вх знизу.pdf",
-         "D:/Кондратюк/Личные/Печатка/КЕП зверху+Вх знизу.pdf",
-         "D:/Кондратюк/Личные/Печатка/КЕП+ЕП знизу.pdf",
-         "D:/Кондратюк/Личные/Печатка/КЕП зверху+ЕП знизу.pdf"]
 
+TEMP_FOLDER = Path("D:/Кондратюк/Личные/Штамп/Для штампів")
+TEMP_PDF = TEMP_FOLDER.joinpath("temp.pdf")
+ENTRY_NUMBER = TEMP_FOLDER.joinpath("entry_number.pdf")
+STAMP = {"1": "Без-КЕП+Вх.pdf",
+         "2": "КЕП+Вх.pdf",
+         "3": "Без-КЕП+ЕП.pdf",
+         "4": "КЕП+ЕП.pdf"}
+
+
+def find_file():
+    for file in Path().iterdir():
+        if file.is_file() and file.suffix == ".pdf":
+            return file
 
 def main():
+
+    input_file = find_file()
+    file_name = input_file.name
+
+    if not input_file:
+        print("Файл не знайдений")
+        input("Натисніть ентер для закриття")
+        quit()
 
     number = input("Введіть вхідний номер: ")
     print("Виберіть варіант штампу")
 
-    for i in stamp:
-        print(f"i: {stamp[i]}")
+    for i, value in STAMP.items():
+        print(f"{i}: {value}")
 
-    choice_stamp = int(input("Варіант: "))
-    date = datetime.today().strftime('"%d".%m.%Y')
+    number_stamp = input("Варіант: ")
+    
+    
 
-    entry_number_date = f'{number}/{date[:-3:-1]}-Вх                {date} р.'
+    stamp = TEMP_FOLDER.joinpath(STAMP[number_stamp])
+    date = datetime.today().strftime('"%d"  %m  %Y')
 
+    if number_stamp == "1" or number_stamp == "2":
+        count_space = (" " * 16)[len(number)*2:]
+        entry_number_date = f'{number}/{date[:-3:-1]}-Вх{count_space}{date} р.'
+    elif number_stamp == "3" or number_stamp == "4":
+        count_space = (" " * 8)[len(number)*2:]
+        entry_number_date = f'{number}/{date[:-3:-1]}-Вх{count_space}{date} р.'
+
+    print(len(count_space))
     txt_to_pdf(entry_number_date)
-    merge_pdf(input_file, stamp[choice_stamp], entry_number)
-    remove("entry_number.pdf")
 
-def merge_pdf(pdf1, pdf2, pdf3):
+    with pikepdf.Pdf.open(input_file) as input_pdf:
+        input_pdf.save(TEMP_PDF)
+
+    merge_pdf(TEMP_PDF, stamp, ENTRY_NUMBER, file_name)
+    remove(ENTRY_NUMBER)
+    remove(TEMP_FOLDER.joinpath("done.pdf"))
+    remove(TEMP_PDF)
+
+def merge_pdf(pdf1, pdf2, pdf3, file_name):
 
     with open(pdf1, "rb") as input1:
         input1 = PdfFileReader(input1)
+        numb_pages = input1.getNumPages()
 
         with open(pdf2, "rb") as input2:
             input2 = PdfFileReader(input2)
@@ -49,20 +82,28 @@ def merge_pdf(pdf1, pdf2, pdf3):
 
                 output = PdfFileWriter()
                 output.addPage(input1)
-                output.write("output.pdf")
+                output.write(TEMP_FOLDER.joinpath("done.pdf"))
+
+                merger = PdfMerger()
+                merger.append(TEMP_FOLDER.joinpath("done.pdf"))
+                merger.append(pdf1, pages=(1, numb_pages))
+                merger.write("done_" + file_name)
+                merger.close()
+
 
 def txt_to_pdf(txt):
     pdf = FPDF()
     pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=0.0)
 
     pdf.add_font("Times New Roman", "", 
-                 "font/Times New Roman/times new roman bold.ttf", uni=True)
+                 TEMP_FOLDER.joinpath("font/Times New Roman/times new roman.ttf"), uni=True)
 
-    pdf.set_font("Times New Roman", size=9)
-    pdf.cell(180, 241, ln=1)
-    pdf.cell(188, 0, txt=txt, ln=1, align="R")
+    pdf.set_font("Times New Roman", size=10)
+    pdf.cell(0, 276, ln=2)
+    pdf.cell(198, 0, txt=txt, ln=2, align="R")
 
-    pdf.output("entry_number.pdf")
+    pdf.output(ENTRY_NUMBER)
 
 if __name__ == "__main__":
     main()
