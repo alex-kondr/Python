@@ -1,6 +1,6 @@
 import shutil, sys
 from pathlib import Path
-from .translit_letters import *
+from .translit_letters import normalize
 
    
 folder_sort = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("*")
@@ -80,27 +80,6 @@ def main():
     print(f"list_file_on_type: {list_file_on_type}")
     print(f"list_of_extensions: {list_of_extensions}")
     print("Done")
-
-
-def normalize(name_file: str) -> str:
-    """Normalize name file"""
-
-    normalize_name = ""
-
-    for char in name_file:
-
-        if char in upper_case_letters:
-            char = upper_case_letters[char]
-
-        elif char in lower_case_letters:
-            char = lower_case_letters[char]
-
-        elif not char.isdigit() and not char.isalpha():
-            char = "_"
-
-        normalize_name += char
-
-    return normalize_name
 
 def rm_empty_dir(dir: Path):
 

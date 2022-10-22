@@ -9,9 +9,12 @@ def all_sub_lists(data):
         for i in range(j):
             sub_lists.append(data[i:j])
 
-    sub_lists.sort()
+    sub_lists.sort(key=func)
 
     return sub_lists
+
+def func(el):
+    return len(el)
 
 
 print(all_sub_lists(data))
