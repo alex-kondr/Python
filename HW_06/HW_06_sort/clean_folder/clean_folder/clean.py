@@ -1,6 +1,6 @@
 import shutil, sys
 from pathlib import Path
-from translit_letters import *
+from .translit_letters import *
 
    
 folder_sort = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("*")
@@ -56,6 +56,11 @@ def move_file(file: Path, new_name: str, type_file: str) -> Path:
     return new_file
 
 def main():
+
+    if not folder_sort.is_dir():
+        print("Enter valid folder")
+        quit()
+   
     unknown_extensions = []
 
     list_file_on_type = create_folders()
