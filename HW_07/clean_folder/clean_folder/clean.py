@@ -125,7 +125,4 @@ def sort_file_in_folder(folder: Path, list_file_on_type: dict, unknown_extension
 
 if __name__ == "__main__":
 
-    if folder_sort.is_dir():
-        main()
-    else:
-        print("Enter valid folder")
+    main()
