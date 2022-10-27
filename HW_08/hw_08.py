@@ -16,33 +16,44 @@ users1 = []
 def get_birthdays_per_week(users):
 
     birth_users = {}
-    now = datetime.now()
-    next_week = now + timedelta(weeks=1)
-    week = timedelta(weeks=1)
 
     for u in users:
-        a = u["birthday"]
-        b = next_week.weekday()
-        temp = datetime(year=now.year, month=u["birthday"].month, day=u["birthday"].day)
 
-        if temp.isocalendar().week == next_week.isocalendar().week:
+        day, name = add_to_calendar(u["name"], u["birthday"])
 
-            if birth_users.get(temp.strftime("%A")):
-                birth_users[temp.strftime("%A")].append(u["name"])
-            else:
-                birth_users[temp.strftime("%A")] = [u["name"]]
+        if day and birth_users.get(day):
+            birth_users[day].append(name)
 
-        elif temp.isocalendar().week == now.isocalendar().week and \
-                (temp.weekday() == 5 or temp.weekday() == 6):
-
-            if birth_users.get("Monday"):
-                birth_users["Monday"].append(u["name"])
-            else:
-                birth_users["Monday"] = [u["name"]]
+        elif day:
+            birth_users[day] = [name]
 
     return birth_users
 
-print(get_birthdays_per_week(users1))
+def add_to_calendar(name: str, byrthday: datetime):
+
+    day = ""
+
+    now = datetime.now()
+    next_week = now + timedelta(weeks=1)
+    birthday = datetime(
+        year=now.year, 
+        month=byrthday.month,
+        day=byrthday.day
+    )
+
+    if birthday.isocalendar().week == next_week.isocalendar().week:
+
+        day = birthday.strftime("%A")
+
+    elif birthday.isocalendar().week == now.isocalendar().week and \
+            (birthday.weekday() == 5 or birthday.weekday() == 6):
+       
+        day = "Monday"
+
+    return day, name
+
+
+print(get_birthdays_per_week(users))
 
 
 
