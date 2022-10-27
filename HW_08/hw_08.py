@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 
+
 def get_birthdays_per_week(users: list) -> dict:
 
     birth_users = {}
@@ -18,18 +19,14 @@ def get_birthdays_per_week(users: list) -> dict:
     return birth_users
 
 
-def day_of_celebration(byrthday: datetime) -> str:
+def day_of_celebration(birthday: datetime) -> str:
     # If birthday is the next week returns day of week
 
     day = ""
 
     now = datetime.now()
     next_week = now + timedelta(weeks=1)
-    birthday = datetime(
-        year=now.year, 
-        month=byrthday.month,
-        day=byrthday.day
-    )
+    birthday = birthday.replace(year=now.year)    
 
     if birthday.isocalendar().week == next_week.isocalendar().week:
 
