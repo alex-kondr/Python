@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 
 
-
 def get_birthdays_per_week(users: list) -> dict:
 
     birth_users = {}
@@ -17,7 +16,6 @@ def get_birthdays_per_week(users: list) -> dict:
             birth_users[day] = [u["name"]]
 
     return birth_users
-
 
 def day_of_celebration(birthday: datetime) -> str:
     # If birthday is the next week returns day of week
