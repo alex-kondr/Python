@@ -12,23 +12,25 @@ users = [
 ]
 
 
-def get_birthdays_per_week(users):
+def get_birthdays_per_week(users: list) -> dict:
 
     birth_users = {}
 
     for u in users:
 
-        day, name = add_to_calendar(u["name"], u["birthday"])
+        day = day_of_celebration(u["birthday"])
 
         if day and birth_users.get(day):
-            birth_users[day].append(name)
+            birth_users[day].append(u["name"])
 
         elif day:
-            birth_users[day] = [name]
+            birth_users[day] = [u["name"]]
 
     return birth_users
 
-def add_to_calendar(name: str, byrthday: datetime):
+
+def day_of_celebration(byrthday: datetime) -> str:
+    # If birthday is the next week returns day of week
 
     day = ""
 
@@ -49,7 +51,7 @@ def add_to_calendar(name: str, byrthday: datetime):
        
         day = "Monday"
 
-    return day, name
+    return day
 
 
 print(get_birthdays_per_week(users))
