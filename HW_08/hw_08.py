@@ -11,7 +11,6 @@ users = [
     {"name": "Baz+", "birthday": datetime(year=1989, month=10, day=29, hour=18, minute=31, second=46)} #Monday
 ]
 
-users1 = []
 
 def get_birthdays_per_week(users):
 
@@ -46,7 +45,7 @@ def add_to_calendar(name: str, byrthday: datetime):
         day = birthday.strftime("%A")
 
     elif birthday.isocalendar().week == now.isocalendar().week and \
-            (birthday.weekday() == 5 or birthday.weekday() == 6):
+        (birthday.weekday() == 5 or birthday.weekday() == 6):
        
         day = "Monday"
 
