@@ -2,29 +2,51 @@
 
 
 USERS = {}
-
-"""COMMANDS = {"command": func}"""
-# COMMANDS = {"add": add()}
+EXIT = ("good bye", "exit", "close")
 
 
-def add(name, phone): 
-    USERS.update({name: phone})
+def input_error(func):
+    def inner(data):
 
-def input_error():
-    pass
-    
+        try:
+            func(data)
+        except TypeError:
+            func()
+            # print("ups")
 
-def change(name, phone):
-    USERS.update({name: phone})
+    return inner
 
+@input_error
+def add(data):
+    USERS.update({data.get(1): data.get(2)})
+   
+@input_error
+def change(data):
+    USERS.update({data.get(1): data.get(2)})
+
+@input_error
 def hello():
-    pass
 
-def phone():
-    pass
+    info = {
+        "add": "add (name) (phone)",
+        "change": "change (name) (phone)",
+        "hello": "print info",
+        "phone": "phone (name)",
+        "show_all": "show all names and phones"}
+    print("How can I help you?")
+    print("This bot supports the following commands:")
 
-def show_all():
-    pass
+    for com, inf in info.items():
+        print(f"{com}: {inf}")
+
+def phone(data):
+    return USERS.get(data.get(1))
+
+def show_all(_):
+    for name, phone in USERS.items():
+        pass
+    
+    return f""
 
 COMMANDS = {
     "add": add,
@@ -36,52 +58,22 @@ COMMANDS = {
 
 
 def main():
-
-    # COMMANDS = {
-    #     "add": add(new_command[1], new_command[2]),
-    #     }
+    
 
     while True:
+        
 
-        in_command = input("Please enter 'add name phone': ").split()
-        in_command = dict(enumerate(in_command))
+        data = input("Please enter 'add name phone': ").split()
+        data = dict(enumerate(data))
 
-        command = COMMANDS.get(in_command.get(0))
-        command(in_command.get(1), in_command.get(2))
+        if data.get(0).lower() in EXIT:
+            print("Good bye!")
+            quit()
 
+        command = COMMANDS.get(data.get(0).lower())
+        print(command(data) or "Please input new command")
 
-        # if in_command[0] == "add":
-            
-        #     name = in_command[1]
-
-        #     if USERS.get(name):
-        #         print(f"User {name} already exists")
-        #         print("If you want change this name please input 'change name phone'")
-        #         continue
-
-        #     phone = in_command[2]
-        #     add_change(name, phone)
-
-        # elif in_command[0] == "change":
-        #     name = in_command[1]
-        #     phone = in_command[2]
-        #     add_change(name, phone)
-
-        # elif in_command[0] =="phone":
-        #     name = in_command[1]
-
-        #     if not USERS.get(name):
-        #         print(f"User {name} is not exists")
-        #         continue
-
-        #     print(f"{name}: {USERS.get(name)}")
-                
-            
-
-        # COMMANDS[new_command[0]]
-
-        # add(new_user)
-        print(USERS)
+        # print(USERS)
 
 if __name__ == "__main__":    
     main()
