@@ -1,0 +1,53 @@
+from input_error import input_error
+import re
+
+
+USERS = {}
+
+
+@input_error
+def add(data):
+
+    name, phone = data.split()
+    phone = re.search(r"\+380\d{9}", phone)
+
+    if name not in USERS and phone:
+        USERS.update({name: phone.group()})
+        return f"User '{name}' added to phone book"
+
+    return f"User '{name}' already exist or phone not valid.\n\
+        The phone number should look like +380123456789"
+
+@input_error
+def change(data):
+
+    name, phone = data.split()
+    phone = re.search(r"\+380\d{9}", phone)
+
+    if name in USERS and phone:
+        USERS.update({name: phone.group()})
+        return f"User '{name}' changed on phone book"
+
+    return f"User '{name}' not found on phone book or phone number not valid.\n\
+        The phone number should look like +380123456789"
+
+@input_error
+def phone(data):
+
+    name = data
+    message = "|{:^10}|{:^10}|\n".format("User", "Phone")
+    message += "-" * 23 + "\n"
+    message += "|{:^10}|{:<10}|".format(name, USERS[name])
+
+    return message
+
+@input_error
+def show_all():
+
+    message = "|{:^10}|{:^10}|\n".format("User", "Phone")
+    message += "-" * 23 + "\n"
+
+    for name, phone in USERS.items():
+        message += "|{:^10}|{:<10}|\n".format(name, phone)
+
+    return message
