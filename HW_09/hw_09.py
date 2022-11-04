@@ -1,6 +1,3 @@
-"""USERS = {"name": "phone"}"""
-
-
 USERS = {}
 EXIT = ("good bye", "exit", "close")
 
@@ -16,9 +13,6 @@ def input_error(func):
         return message
 
     return inner
-
-def input_error(func):
-    def inner(data):
 
 @input_error
 def add(data):
@@ -49,6 +43,7 @@ def hello(_):
         "hello": "print info",
         "phone": "phone (name)",
         "show_all": "show all names and phones"}
+
     message = "How can I help you?\n"
     message += "This bot supports the following commands:\n\n"
     message += "|{:^8}|{:^25}|\n".format("Command", "Information")
@@ -87,7 +82,6 @@ COMMANDS = {
     "phone": phone,
     "show_all": show_all
 }
-
 
 def main():
 
