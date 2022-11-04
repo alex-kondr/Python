@@ -12,7 +12,7 @@ COMMANDS = {
 }
 
 
-def check_exit(data):
+def check_exit(data: str) -> str:
 
     exit = ("good bye", "exit", "close")
 
@@ -39,7 +39,7 @@ def main():
 
         else:
             message = "\n" + "-" * 50 + "\n"
-            message += "Enter valid command.\n" + \
+            message += "Enter valid command.\n"\
                 "Please enter help for more information."
             message += "\n" + "-" * 50 + "\n"
 

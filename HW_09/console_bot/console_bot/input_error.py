@@ -1,7 +1,7 @@
 def input_error(func):
-    def inner(data):
+    def inner(data: str) -> str:
 
-        message = "\n" + "-" * 50 + "\n"
+        message = "\n" + "-" * 55 + "\n"
 
         try:
             message += func(data)
@@ -11,8 +11,11 @@ def input_error(func):
 
         except ValueError:
             message += "\nEnter valid command.\nPlease enter help for more information.\n"
+        
+        except KeyError:
+            message += "\nThis name not exists.\n"
 
-        message += "\n" + "-" * 50 + "\n"
+        message += "\n" + "-" * 55 + "\n"
 
         return message
 

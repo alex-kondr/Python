@@ -6,7 +6,7 @@ USERS = {}
 
 
 @input_error
-def add(data):
+def add(data: str) -> str:
 
     name, phone = data.split()
     phone = re.search(r"\+380\d{9}", phone)
@@ -15,11 +15,11 @@ def add(data):
         USERS.update({name: phone.group()})
         return f"User '{name}' added to phone book"
 
-    return f"User '{name}' already exist or phone not valid.\n\
-        The phone number should look like +380123456789"
+    return f"User '{name}' already exist or phone number not valid.\n"\
+        "The phone number should look like +380123456789"
 
 @input_error
-def change(data):
+def change(data: str) -> str:
 
     name, phone = data.split()
     phone = re.search(r"\+380\d{9}", phone)
@@ -28,11 +28,11 @@ def change(data):
         USERS.update({name: phone.group()})
         return f"User '{name}' changed on phone book"
 
-    return f"User '{name}' not found on phone book or phone number not valid.\n\
-        The phone number should look like +380123456789"
+    return f"User '{name}' not found on phone book or phone number not valid.\n"\
+        "The phone number should look like +380123456789"
 
 @input_error
-def phone(data):
+def phone(data: str) -> str:
 
     name = data
     message = "|{:^10}|{:^10}|\n".format("User", "Phone")
@@ -42,7 +42,7 @@ def phone(data):
     return message
 
 @input_error
-def show_all():
+def show_all() -> str:
 
     message = "|{:^10}|{:^10}|\n".format("User", "Phone")
     message += "-" * 23 + "\n"
