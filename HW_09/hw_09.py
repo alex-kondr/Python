@@ -2,29 +2,81 @@
 
 
 USERS = {}
-
-"""COMMANDS = {"command": func}"""
-# COMMANDS = {"add": add()}
+EXIT = ("good bye", "exit", "close")
 
 
-def add(name, phone): 
+def input_error(func):
+    def inner(data):
+
+        try:
+            message = func(data)
+        except TypeError:
+            func()
+            # print("ups")
+        return message
+
+    return inner
+
+
+@input_error
+def add(data):
+
+    name, phone = data.split()
     USERS.update({name: phone})
 
-def input_error():
-    pass
+    return f"User {name} added to phone book"
+
+
+@input_error
+def change(data):
+
+    name, phone = data.split()
     
+    if name in USERS:        
+        USERS.update({name: phone})
+        return f"User {name} changed on phone book"
 
-def change(name, phone):
-    USERS.update({name: phone})
+    return f"User {name} not found on phone book"
 
-def hello():
-    pass
+@input_error
+def hello(_):
 
-def phone():
-    pass
+    info = {
+        "add": "add (name) (phone)",
+        "change": "change (name) (phone)",
+        "hello": "print info",
+        "phone": "phone (name)",
+        "show_all": "show all names and phones"}
+    message = "How can I help you?\n"
+    message += "This bot supports the following commands:\n\n"
+    message += "|{:^8}|{:^25}|\n".format("Command", "Information")
+    message += "-" * 38 + "\n"
 
-def show_all():
-    pass
+    for com, inf in info.items():
+        message += "|{:<10}|{:<25}|\n".format(com, inf)
+    
+    return message
+
+@input_error
+def phone(data):
+
+    name = data
+    message = "|{:^10}|{:^10}|\n".format("User", "Phone")
+    message += "-" * 23 + "\n"
+    message += "|{:^10}|{:<10}|\n".format(name, USERS[name])
+
+    return message
+
+@input_error
+def show_all(_):
+
+    message = "|{:^10}|{:^10}|\n".format("User", "Phone")
+    message += "-" * 23 + "\n"
+
+    for name, phone in USERS.items():        
+        message += "|{:^10}|{:<10}|\n".format(name, phone)
+
+    return message
 
 COMMANDS = {
     "add": add,
@@ -37,51 +89,22 @@ COMMANDS = {
 
 def main():
 
-    # COMMANDS = {
-    #     "add": add(new_command[1], new_command[2]),
-    #     }
-
     while True:
 
-        in_command = input("Please enter 'add name phone': ").split()
-        in_command = dict(enumerate(in_command))
+        data = input("Please enter your command: ")
+        command = data.lower().split()[0]
 
-        command = COMMANDS.get(in_command.get(0))
-        command(in_command.get(1), in_command.get(2))
+        if command in EXIT:
+            print("Good bye!")
+            quit()
 
+        if command in COMMANDS:
+            data = data[len(command)+1:]
+            command = COMMANDS[command]
+            message = command(data)
 
-        # if in_command[0] == "add":
-            
-        #     name = in_command[1]
+        print(message) 
 
-        #     if USERS.get(name):
-        #         print(f"User {name} already exists")
-        #         print("If you want change this name please input 'change name phone'")
-        #         continue
-
-        #     phone = in_command[2]
-        #     add_change(name, phone)
-
-        # elif in_command[0] == "change":
-        #     name = in_command[1]
-        #     phone = in_command[2]
-        #     add_change(name, phone)
-
-        # elif in_command[0] =="phone":
-        #     name = in_command[1]
-
-        #     if not USERS.get(name):
-        #         print(f"User {name} is not exists")
-        #         continue
-
-        #     print(f"{name}: {USERS.get(name)}")
-                
-            
-
-        # COMMANDS[new_command[0]]
-
-        # add(new_user)
-        print(USERS)
-
-if __name__ == "__main__":    
+if __name__ == "__main__":
     main()
+
