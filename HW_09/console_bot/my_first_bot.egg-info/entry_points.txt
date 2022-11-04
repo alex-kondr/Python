@@ -1,0 +1,3 @@
+[console_scripts]
+my_bot = console_bot.bot:main
+

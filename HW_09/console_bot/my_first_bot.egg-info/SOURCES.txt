@@ -1,0 +1,13 @@
+LICENSE
+README.md
+setup.py
+console_bot/__init__.py
+console_bot/actions.py
+console_bot/bot.py
+console_bot/informations.py
+console_bot/input_error.py
+my_first_bot.egg-info/PKG-INFO
+my_first_bot.egg-info/SOURCES.txt
+my_first_bot.egg-info/dependency_links.txt
+my_first_bot.egg-info/entry_points.txt
+my_first_bot.egg-info/top_level.txt
