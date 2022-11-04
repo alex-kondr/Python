@@ -17,6 +17,8 @@ def input_error(func):
 
     return inner
 
+def input_error(func):
+    def inner(data):
 
 @input_error
 def add(data):
