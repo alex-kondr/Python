@@ -7,7 +7,9 @@ USERS = {}
 
 
 class AddressBook(UserDict):
-    pass
+
+    def add_record(self):
+        pass
 
 
 class Field:
@@ -18,7 +20,12 @@ class Name:
 
     def __init__(self, name):
         self.name = name
-        
+
+
+class Phone:
+
+    phone = None
+            
 
 class Record:
 
