@@ -12,7 +12,7 @@ COMMANDS = {
 }
 
 
-def check_exit(data: str) -> str:
+def check_exit(data: str):
 
     exit = ("good bye", "exit", "close")
 
