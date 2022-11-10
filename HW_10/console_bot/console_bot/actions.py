@@ -2,7 +2,8 @@ from address_book import AddressBook, Name, Phone, Record
 from input_error import input_error
 import re
 
-address_book = AddressBook()
+
+ADDRESS_BOOK = AddressBook()
 
 
 @input_error
@@ -11,25 +12,15 @@ def add(data: str) -> str:
     name, phone = data.split()
     phone = re.search(r"\+380\d{9}", phone)
 
-    if name and phone:
+    if not ADDRESS_BOOK.get_contact(name) and phone:
         new_phone = Phone()
         new_phone.mobile_phone = phone.group()
-
-        # if address_book.get_contact(name):
-        #     record = address_book.get_contact(name)
-
         name = Name(name)
         record = Record(name)
         record.add_phone(new_phone)
-        address_book.add_record(record)
-
-        print(address_book.list_contacts, address_book.count)
-        return f"User '{name.value}' added to phone book"
-
-        # {record.name.value: record}
-    # if name not in USERS and phone:
-    #     USERS.update({name: phone.group()})
-    #     return f"User '{name}' added to phone book"
+        ADDRESS_BOOK.add_record(record)
+        
+        return f"User '{name.value}' added to phone book."
 
     return f"User '{name}' already exist or phone number not valid.\n"\
         "The phone number should look like +380123456789"
@@ -41,9 +32,16 @@ def change(data: str) -> str:
     name, phone = data.split()
     phone = re.search(r"\+380\d{9}", phone)
 
-    # if name in USERS and phone:
-    #     USERS.update({name: phone.group()})
-    #     return f"User '{name}' changed on phone book"
+    if ADDRESS_BOOK.get_contact(name) and phone:
+
+        new_phone = Phone()
+        new_phone.mobile_phone = phone.group()
+        name = Name(name)
+        record = Record(name)
+        record.add_phone(new_phone)
+        ADDRESS_BOOK.add_record(record)
+
+        return f"User '{name.value}' changed on address book."
 
     return f"User '{name}' not found on phone book or phone number not valid.\n"\
         "The phone number should look like +380123456789"
@@ -65,11 +63,11 @@ def show_all() -> str:
 
     message = "|{:^10}|{:^13}|\n".format("User", "Phone")
     message += "-" * 26 + "\n"
+    list_contacts = ADDRESS_BOOK.list_contacts()
     
-
-    for name, record in address_book.list_contacts().items():
+    for name, record in list_contacts.items():
 
       for phone in record.phones:
-        message += "|{:^10}|{:<13}|\n".format(name, phone)
+        message += "|{:^10}|{:<13}|\n".format(name, phone.mobile_phone)
 
     return message

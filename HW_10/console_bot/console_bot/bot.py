@@ -21,7 +21,7 @@ def check_exit(data: str):
             return "\nGood bye\n"
 
 def main():
-
+    
     while True:
 
         data = input("Please enter your command: ")
