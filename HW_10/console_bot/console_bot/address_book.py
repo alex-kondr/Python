@@ -57,9 +57,7 @@ class AddressBook(UserDict, Field):
         # AddressBook.count += 1
 
     def get_contact(self, name: str):
-        contact = self.data.get(name)
+        return self.data.get(name)
 
-        return contact
-
-    def list_contacts(self):
+    def list_contacts(self) -> dict:
         return self.data

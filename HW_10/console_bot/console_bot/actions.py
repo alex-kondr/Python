@@ -51,9 +51,13 @@ def change(data: str) -> str:
 def phone(data: str) -> str:
 
     name = data
+    record = ADDRESS_BOOK.get_contact(name)
     message = "|{:^10}|{:^13}|\n".format("User", "Phone")
     message += "-" * 26 + "\n"
-    # message += "|{:^10}|{:<13}|".format(name, USERS[name])
+
+    if record:
+        for phone in record.phones:
+            message += "|{:^10}|{:<13}|".format(name, phone.mobile_phone)
 
     return message
 
