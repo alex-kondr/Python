@@ -60,7 +60,7 @@ class AddressBook(UserDict, Field):
         contact = list(
             filter(lambda contact: contact.get(name), self.data))
 
-        return contact
+        return contact[0] if len(contact) > 0 else None
 
     def list_contacts(self):
         return self.data

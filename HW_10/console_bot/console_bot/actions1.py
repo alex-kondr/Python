@@ -1,9 +1,8 @@
-import address_book
 from input_error import input_error
 import re
 
 
-# USERS = {}
+USERS = {}
 
 
 @input_error

@@ -1,6 +1,8 @@
-import address_book
+from address_book import AddressBook, Name, Phone, Record
 from input_error import input_error
 import re
+
+address_book = AddressBook()
 
 
 @input_error
@@ -8,9 +10,24 @@ def add(data: str) -> str:
 
     name, phone = data.split()
     phone = re.search(r"\+380\d{9}", phone)
-
     
 
+    if name and phone:
+        new_phone = Phone()
+        new_phone.mobile_phone = phone.group()
+
+        # if address_book.get_contact(name):
+        #     record = address_book.get_contact(name)
+
+        name = Name(name)
+        record = Record(name)
+        record.add_phone(new_phone)
+        address_book.add_record(record)
+
+        print(address_book.list_contacts, address_book.count)
+        return f"User '{name.value}' added to phone book"
+    
+        # {record.name.value: record}
     # if name not in USERS and phone:
     #     USERS.update({name: phone.group()})
     #     return f"User '{name}' added to phone book"
