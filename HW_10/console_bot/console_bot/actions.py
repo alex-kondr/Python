@@ -10,7 +10,6 @@ def add(data: str) -> str:
 
     name, phone = data.split()
     phone = re.search(r"\+380\d{9}", phone)
-    
 
     if name and phone:
         new_phone = Phone()
@@ -26,7 +25,7 @@ def add(data: str) -> str:
 
         print(address_book.list_contacts, address_book.count)
         return f"User '{name.value}' added to phone book"
-    
+
         # {record.name.value: record}
     # if name not in USERS and phone:
     #     USERS.update({name: phone.group()})
@@ -66,9 +65,11 @@ def show_all() -> str:
 
     message = "|{:^10}|{:^13}|\n".format("User", "Phone")
     message += "-" * 26 + "\n"
+    
 
-    # for name, phone in USERS.items():
-    #     message += "|{:^10}|{:<13}|\n".format(name, phone)
+    for name, record in address_book.list_contacts().items():
+
+      for phone in record.phones:
+        message += "|{:^10}|{:<13}|\n".format(name, phone)
 
     return message
-
