@@ -52,7 +52,6 @@ class AddressBook(UserDict, Field):
     # count = 0
 
     def add_record(self, record: Record):
-
         self.data.update({record.name.value: record})
         # AddressBook.count += 1
 
