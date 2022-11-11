@@ -12,24 +12,21 @@ class Name(Field):
 
 
 class Phone(Field):
-    
-    mobile_phone = ""
-    home_phone = ""
-    email = ""
+
+    def __init__(self):    
+        self.mobile_phone = ""
+        self.home_phone = ""
+        self.email = ""
 
 
 class Record(Field):
 
     def __init__(self, name: Name):
         self.name = name
+        self.phones = []
 
     def add_phone(self, phone: Phone):
-
-        try:
-            self.phones.append(phone)
-
-        except AttributeError:
-            self.phones = [phone]
+        self.phones.append(phone)
 
     def change_phone(self, old_number: str, new_number: str):
         phone = list(
@@ -47,7 +44,7 @@ class Record(Field):
             self.phones.remove(phone[0])
 
 
-class AddressBook(UserDict, Field):
+class AddressBook(UserDict):
 
     # count = 0
 
