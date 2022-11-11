@@ -62,10 +62,9 @@ def phone(data: str) -> str:
     return message
 
 
-@input_error
 def show_all() -> str:
 
-    message = "|{:^10}|{:^13}|\n".format("User", "Phone")
+    message = "\n|{:^10}|{:^13}|\n".format("User", "Phone")
     message += "-" * 26 + "\n"
     list_contacts = ADDRESS_BOOK.list_contacts()
     

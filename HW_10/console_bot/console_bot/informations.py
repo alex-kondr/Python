@@ -1,10 +1,7 @@
-from input_error import input_error
-
-@input_error
 def hello() -> str:
     return "Hello. How can I help you?\nPlease enter help for more information."
 
-@input_error
+
 def help() -> str:
 
     info = {

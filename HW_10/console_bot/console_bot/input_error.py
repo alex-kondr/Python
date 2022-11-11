@@ -5,10 +5,7 @@ def input_error(func):
 
         try:
             message += func(data)
-
-        except TypeError:
-            message += func()
-
+            
         except ValueError:
             message += "\nEnter valid command.\nPlease enter help for more information.\n"
         

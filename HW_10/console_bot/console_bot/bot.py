@@ -5,10 +5,10 @@ import informations
 COMMANDS = {
     "add": actions.add,
     "change": actions.change,
-    "hello": informations.hello,
-    "help": informations.help,
+    "hello": lambda _: informations.hello(),
+    "help": lambda _: informations.help(),
     "phone": actions.phone,
-    "show_all": actions.show_all
+    "show_all": lambda _: actions.show_all()
 }
 
 
@@ -17,7 +17,7 @@ def check_exit(data: str):
     exit = ("good bye", "exit", "close")
 
     for text in exit:
-        if text in data:
+        if text in data.lower():
             return "\nGood bye\n"
 
 def main():
