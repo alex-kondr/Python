@@ -11,6 +11,9 @@ def input_error(func):
         
         except KeyError:
             message += "\nThis name not exists.\n"
+        
+        except IndexError as error:
+            message += str(error)
 
         message += "\n" + "-" * 55 + "\n"
 

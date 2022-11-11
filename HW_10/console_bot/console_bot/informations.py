@@ -13,14 +13,16 @@ def help() -> str:
         "help": "Prints info",
         "phone": "Shows the contact's phone number.",
         "Example_3": "phone Bob",
+        "remove_phone": "Removes mobile phone in user",
+        "Example_3": "remove_phone Bob",
         "show_all": "Shows all names and phones"
     }
 
-    message = "This bot supports the following commands:\n\n"
-    message += "|{:^10}|{:^42}|\n|".format("Command", "Information")
-    message += "-" * 53 + "|\n"
+    message = "\nThis bot supports the following commands:\n\n"
+    message += "|{:^13}|{:^42}|\n|".format("Command", "Information")
+    message += "-" * 56 + "|\n"
 
     for com, inf in info.items():
-        message += "|{:<10}|{:<42}|\n".format(com, inf)
+        message += "|{:<13}|{:<42}|\n".format(com, inf)
 
     return message

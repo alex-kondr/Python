@@ -8,6 +8,7 @@ COMMANDS = {
     "hello": lambda _: informations.hello(),
     "help": lambda _: informations.help(),
     "phone": actions.phone,
+    "remove_phone": actions.remove_phone,
     "show_all": lambda _: actions.show_all()
 }
 
@@ -24,7 +25,7 @@ def main():
     
     while True:
 
-        data = input("Please enter your command: ")
+        data = input("\nPlease enter your command: ")
         command = data.lower().split()[0] if data else ""
 
         if check_exit(data):

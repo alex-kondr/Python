@@ -28,20 +28,17 @@ class Record(Field):
     def add_phone(self, phone: Phone):
         self.phones.append(phone)
 
-    def change_phone(self, old_number: str, new_number: str):
-        phone = list(
-            filter(lambda phone: phone.mobile_phone == old_number, self.phones))
+    def change_phone(self, number_in_list: int, new_phone: str):        
+        self.phones[number_in_list].mobile_phone = new_phone
 
-        if len(phone) > 0:
-            phone[0].mobile_phone = new_number
+    def remove_phone(self, number_in_list: int):
+        return self.phones.pop(number_in_list)
 
-    def remove_phone(self, phone_value: str):
+        # phone = list(
+        #     filter(lambda phone: phone.mobile_phone == phone_value, self.phones))
 
-        phone = list(
-            filter(lambda phone: phone.mobile_phone == phone_value, self.phones))
-
-        if len(phone) > 0:
-            self.phones.remove(phone[0])
+        # if len(phone) > 0:
+        #     self.phones.remove(phone[0])
 
 
 class AddressBook(UserDict):

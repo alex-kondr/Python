@@ -5,4 +5,5 @@ This bot supports the following commands:
 - hello
 - help
 - phone
+- remove_phone
 - show_all
