@@ -19,7 +19,7 @@ class Phone(Field):
         self.email = ""
 
 
-class Record(Field):
+class Record():
 
     def __init__(self, name: Name):
         self.name = name
@@ -33,12 +33,6 @@ class Record(Field):
 
     def remove_phone(self, number_in_list: int):
         return self.phones.pop(number_in_list)
-
-        # phone = list(
-        #     filter(lambda phone: phone.mobile_phone == phone_value, self.phones))
-
-        # if len(phone) > 0:
-        #     self.phones.remove(phone[0])
 
 
 class AddressBook(UserDict):

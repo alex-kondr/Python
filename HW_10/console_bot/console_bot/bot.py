@@ -2,14 +2,17 @@ import actions
 import informations
 
 
-COMMANDS = {
+ACTIONS = {
     "add": actions.add,
-    "change": actions.change,
-    "hello": lambda _: informations.hello(),
-    "help": lambda _: informations.help(),
+    "change": actions.change,    
     "phone": actions.phone,
-    "remove_phone": actions.remove_phone,
-    "show_all": lambda _: actions.show_all()
+    "remove_phone": actions.remove_phone    
+}
+
+INFORMATIONS = {
+    "hello": informations.hello,
+    "help": informations.help,
+    "show_all": actions.show_all
 }
 
 
@@ -32,11 +35,14 @@ def main():
             print(check_exit(data))
             quit()
 
-        elif command in COMMANDS:
-
+        elif command in ACTIONS:
             data = data[len(command)+1:]
-            command = COMMANDS[command]
+            command = ACTIONS[command]
             message = command(data)
+
+        elif command in INFORMATIONS:
+            command = INFORMATIONS[command]
+            message = command()
 
         else:
             message = "\n" + "-" * 50 + "\n"
