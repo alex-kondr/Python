@@ -12,8 +12,8 @@ def input_error(func):
         except KeyError:
             message += "\nThis name not exists.\n" 
 
-        except ValueError:
-            message += "\nEnter valid command.\nPlease enter help for more information.\n"
+        except ValueError as error:
+            message += str(error)
         
         message += "\n" + "-" * 55 + "\n"
 

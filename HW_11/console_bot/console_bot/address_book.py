@@ -16,7 +16,11 @@ class Birthday(Field):
 
     @value.setter
     def value(self, birthday: str):
-        value = datetime.strptime(birthday, "%d.%m")
+        try:
+            self._value = datetime.strptime(birthday, "%d.%m")
+        except ValueError:
+            raise ValueError("Birthday not valid.\n"
+                "The Birthday should look like '01.01'")
 
 
 class Name(Field):
@@ -47,7 +51,7 @@ class Phone(Field):
 
         if not phone:
             raise ValueError("Phone number not valid.\n"\
-                "The phone number should look like + 380123456789")
+                "The phone number should look like +380123456789")
         
         self._value = phone.group()
 
@@ -55,6 +59,7 @@ class Phone(Field):
 class Record():
 
     def __init__(self, name: Name):
+        self.birthday = Birthday()
         self.name = name
         self.phones = []
 
