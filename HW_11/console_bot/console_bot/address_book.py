@@ -88,12 +88,22 @@ class Record():
 
 class AddressBook(UserDict):
 
+    def __str__(self):
+        message = "\n|{:^10}|{:^13}|\n".format("User", "Phone")
+        message += "-" * 26 + "\n"
+
+        for name, record in self.data.items():
+            for phone in record.phones:
+                message += "|{:^10}|{:<13}|\n".format(name, phone.value)
+        
+        return message
+
     def add_record(self, record: Record):
         self.data.update({record.name.value: record})
 
     def iterator(self, N: int):
         i = 0
-        data = {}
+        data = AddressBook()
         
         for n, (name, record) in enumerate(self.data.items()):
             data.update({name: record})

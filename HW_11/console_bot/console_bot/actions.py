@@ -11,20 +11,17 @@ ADDRESS_BOOK = AddressBook()
 def add(data: str) -> str:
 
     name, phone = data.split()
-    phone = re.search(r"\+380\d{9}", phone)
 
-    if ADDRESS_BOOK.get_contact(name) or not phone:
-        return f"User '{name}' already exist or phone number not valid.\n"\
-                "The phone number should look like +380123456789"
+    if ADDRESS_BOOK.get_contact(name):
+        return f"User '{name}' already exist or phone number not valid.\n"
         
     new_phone = Phone()
-    new_phone.mobile_phone = phone.group()
-    name = Name(name)
-    record = Record(name)
+    new_phone.value = phone
+    record = Record(Name(name))
     record.add_phone(new_phone)
     ADDRESS_BOOK.add_record(record)
     
-    return f"User '{name.value}' added to phone book."    
+    return f"User '{record.name.value}' added to phone book."    
 
 
 @input_error
@@ -94,15 +91,16 @@ def remove_phone(name: str) -> str:
     return f"\nIn user '{name}' deleted mobile phone '{phone.mobile_phone}' on address book."
     
 
-def show_all() -> str:
-
-    message = "\n|{:^10}|{:^13}|\n".format("User", "Phone")
-    message += "-" * 26 + "\n"
-    list_contacts = ADDRESS_BOOK.list_contacts()
+def show_all():
     
-    for name, record in list_contacts.items():
+    try:
+        n = int(input("How many records to show at once. 0 - show all "))
+        for data in ADDRESS_BOOK.iterator(n):
+            print(data)
+            input("Press enter to download the next part ")
 
-        for phone in record.phones:
-            message += "|{:^10}|{:<13}|\n".format(name, phone.mobile_phone)
+    except ValueError:
+        print("Enter valid number")
+        
 
-    return message
+    
