@@ -6,28 +6,10 @@ from input_error import input_error
 
 ADDRESS_BOOK = AddressBook()
 
-
-@input_error
-def add(data: str) -> str:
-
-    name, phone = data.split()
-
-    if ADDRESS_BOOK.get_contact(name):
-        return f"User '{name}' already exist or phone number not valid.\n"
-        
-    new_phone = Phone()
-    new_phone.value = phone
-    record = Record(Name(name))
-    record.add_phone(new_phone)
-    ADDRESS_BOOK.add_record(record)
-    
-    return f"User '{record.name.value}' added to phone book."    
-
-
 @input_error
 def change(name: str) -> str:
 
-    record = ADDRESS_BOOK.get_contact(name)    
+    record = ADDRESS_BOOK.get(name)    
 
     if not record:
         return f"User '{name}' not found on phone book."   
@@ -56,7 +38,7 @@ def change(name: str) -> str:
 @input_error
 def phone(name: str) -> str:
 
-    record = ADDRESS_BOOK.get_contact(name)
+    record = ADDRESS_BOOK.get(name)
     message = "|{:^10}|{:^13}|\n".format("User", "Phone")
     message += "-" * 26 + "\n"
 
@@ -72,7 +54,7 @@ def phone(name: str) -> str:
 @input_error
 def remove_phone(name: str) -> str:
 
-    record = ADDRESS_BOOK.get_contact(name)
+    record = ADDRESS_BOOK.get(name)
 
     if  not record:
         return f"User '{name}' not found on phone book or phone number not valid.\n"

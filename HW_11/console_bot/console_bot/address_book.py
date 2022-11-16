@@ -17,12 +17,8 @@ class Field:
 
 
 class Birthday(Field):
-    
-    @property
-    def value(self):
-        return self._value
 
-    @value.setter
+    @Field.value.setter
     def value(self, birthday: str):
 
         birthday = re.search("\d{2}\.\d{2}", birthday)  #type: ignore
@@ -40,11 +36,7 @@ class Name(Field):
         super().__init__()
         self.value = name
 
-    @property
-    def value(self):
-        return self._value
-
-    @value.setter
+    @Field.value.setter
     def value(self, name: str):
         if type(name) == str:
             self._value = name
@@ -52,11 +44,7 @@ class Name(Field):
 
 class Phone(Field):
 
-    @property
-    def value(self):
-        return self._value
-
-    @value.setter
+    @Field.value.setter
     def value(self, phone: str):
         phone = re.search(r"\+380\d{9}", phone)  # type: ignore
 
@@ -94,7 +82,7 @@ class Record():
         phones = ""
 
         for phone in self.phones:
-            phones += f"{phone}\n"
+            phones += f"{phone.value}|\n"
 
         return phones
 
@@ -109,13 +97,21 @@ class AddressBook(UserDict):
         message += "-" * 26 + "\n"
 
         for name, record in self.data.items():
-            for phone in record.phones:
-                message += "|{:^10}|{:<13}|\n".format(name, phone.value)
+            message += "|{:^10}|{:<13}|\n".format(name, record.list_phones())
         
         return message
 
-    def add_record(self, record: Record):
-        self.data.update({record.name.value: record})
+    def add_record(self, data: str):
+
+        name, phone = data.split()
+        new_phone = Phone()
+        new_phone.value = phone
+        record = self.data.get(name, Record(Name(name)))
+        record.add_phone(new_phone)
+        self.data.update({record.name.value: record})        
+
+        return f"The mobile phone {phone} is added to"\
+            "the user '{name}' in the phone book."
 
     def iterator(self, N: int):
         i = 0
@@ -131,15 +127,18 @@ class AddressBook(UserDict):
                 i = 0
 
     def get_contact(self, name: str):
-        return self.data.get(name)
+        data = AddressBook()
+        data.update({name: self.data.get(name)})
+
+        return data
 
     def list_contacts(self):
         try:
-            n = int(input("How many records to show at once. 0 - show all "))
+            n = int(input("How many records to show at once. 0 - show all: "))
             for data in self.iterator(n):
                 print(data)
                 input("Press enter to download the next part ")
 
         except ValueError:
-            print("Enter valid number")
+            print("\nEnter valid number\n")
 

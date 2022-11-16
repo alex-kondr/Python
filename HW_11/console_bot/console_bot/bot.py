@@ -7,9 +7,9 @@ import informations
 
 
 ACTIONS = {
-    "add": actions.add,
+    "add": actions.ADDRESS_BOOK.add_record,
     "change": actions.change,    
-    "phone": actions.phone,
+    "phone": actions.ADDRESS_BOOK.get_contact,
     "remove_phone": actions.remove_phone    
 }
 
