@@ -91,16 +91,6 @@ def remove_phone(name: str) -> str:
     return f"\nIn user '{name}' deleted mobile phone '{phone.mobile_phone}' on address book."
     
 
-def show_all():
-    
-    try:
-        n = int(input("How many records to show at once. 0 - show all "))
-        for data in ADDRESS_BOOK.iterator(n):
-            print(data)
-            input("Press enter to download the next part ")
-
-    except ValueError:
-        print("Enter valid number")
         
 
     

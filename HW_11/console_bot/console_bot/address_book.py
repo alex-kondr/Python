@@ -4,8 +4,16 @@ import re
 
 
 class Field:
+
     def __init__(self):
         self._value = None
+
+    def __str__(self):
+        return f"{type(self)}: {self.value}"
+
+    @property
+    def value(self):
+        return self._value
 
 
 class Birthday(Field):
@@ -80,7 +88,15 @@ class Record():
         now_date = datetime.now()
         birthday = self.birthday.value.replace(year=now_date.year)
 
-        return  (birthday - now_date).days        
+        return  (birthday - now_date).days
+
+    def list_phones(self) -> str:
+        phones = ""
+
+        for phone in self.phones:
+            phones += f"{phone}\n"
+
+        return phones
 
     def remove_phone(self, number_in_list: int):
         return self.phones.pop(number_in_list)
@@ -117,6 +133,13 @@ class AddressBook(UserDict):
     def get_contact(self, name: str):
         return self.data.get(name)
 
-    def list_contacts(self) -> dict:
-        return self.data
+    def list_contacts(self):
+        try:
+            n = int(input("How many records to show at once. 0 - show all "))
+            for data in self.iterator(n):
+                print(data)
+                input("Press enter to download the next part ")
+
+        except ValueError:
+            print("Enter valid number")
 

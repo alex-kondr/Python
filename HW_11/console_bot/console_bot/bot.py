@@ -1,5 +1,9 @@
 import actions
+# from address_book import AddressBook, Name, Phone, Record
 import informations
+
+
+# ADDRESS_BOOK = actions.ADDRESS_BOOK
 
 
 ACTIONS = {
@@ -12,7 +16,7 @@ ACTIONS = {
 INFORMATIONS = {
     "hello": informations.hello,
     "help": informations.help,
-    "show_all": actions.show_all
+    "show_all": actions.ADDRESS_BOOK.list_contacts
 }
 
 
