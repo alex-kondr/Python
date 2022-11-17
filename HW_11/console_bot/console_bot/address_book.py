@@ -157,14 +157,22 @@ class AddressBook(UserDict):
         
         n = int(input("How many records to show at once. 0 - show all: "))        
         generator = self.iterator(n)
+        data2 = None
+        data1 = None
 
         while True:
             try:
-                data1 = None
-                data = data1 if data1 else next(generator)
-                print(data)             
+                
+                data2 = data1 if data1 else next(generator)
+                print(data2)             
                 data1 = next(generator)
                 input("Press enter to download the next part ")               
 
             except StopIteration:
-                return ""
+                message = ""
+                if not data2:
+                    # return "\nAddress is empty"
+                    message = "\n|{:^3}|{:^10}|{:^3}|{:^13}|\n".format(
+                        "№", "User", "№", "Phone")
+                    message += "-" * 35 + "\n"
+                return message
