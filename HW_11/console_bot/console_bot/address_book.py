@@ -96,7 +96,8 @@ class Record():
 class AddressBook(UserDict):
 
     def __str__(self):
-        message = "\n|{:^3}|{:^10}|{:^3}|{:^13}|\n".format("№", "User", "№", "Phone")
+        message = "\n|{:^3}|{:^10}|{:^3}|{:^13}|\n".format(
+            "№", "User", "№", "Phone")
         message += "-" * 35 + "\n"
 
         for i, (name, record) in enumerate(self.data.items()):
@@ -153,12 +154,17 @@ class AddressBook(UserDict):
         return data
 
     def list_contacts(self):
-        # try:
-        n = int(input("How many records to show at once. 0 - show all: "))
-        for data in self.iterator(n):
-            print(data)
-            input("Press enter to download the next part ")
+        
+        n = int(input("How many records to show at once. 0 - show all: "))        
+        generator = self.iterator(n)
 
-        # except ValueError:
-        #     print("\nEnter valid number\n")
+        while True:
+            try:
+                data1 = None
+                data = data1 if data1 else next(generator)
+                print(data)             
+                data1 = next(generator)
+                input("Press enter to download the next part ")               
 
+            except StopIteration:
+                return ""
