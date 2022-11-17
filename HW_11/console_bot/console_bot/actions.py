@@ -19,7 +19,7 @@ def change(name: str) -> str:
     message += "-" * 26 + "\n"
 
     for i, phone in enumerate(record.phones):
-        message += "|{:^10}|{:<13}|\n".format(i+1, phone.mobile_phone)
+        message += "|{:^10}|{:<13}|\n".format(i+1, phone.value)
         print(message)
 
     number = int(input("Select the number in the order you want to change: ")) - 1
@@ -35,20 +35,20 @@ def change(name: str) -> str:
     return f"User '{name}' changed mobile phone on address book."    
 
 
-@input_error
-def phone(name: str) -> str:
+# @input_error
+# def phone(name: str) -> str:
 
-    record = ADDRESS_BOOK.get(name)
-    message = "|{:^10}|{:^13}|\n".format("User", "Phone")
-    message += "-" * 26 + "\n"
+#     record = ADDRESS_BOOK.get(name)
+#     message = "|{:^10}|{:^13}|\n".format("User", "Phone")
+#     message += "-" * 26 + "\n"
 
-    if not record:
-       return message 
+#     if not record:
+#        return message 
 
-    for phone in record.phones:
-        message += "|{:^10}|{:<13}|".format(name, phone.mobile_phone)
+#     for phone in record.phones:
+#         message += "|{:^10}|{:<13}|".format(name, phone.mobile_phone)
     
-    return message    
+#     return message    
 
 
 @input_error

@@ -66,7 +66,7 @@ class Record():
         self.phones.append(phone)
 
     def change_phone(self, number_in_list: int, new_phone: str):        
-        self.phones[number_in_list].mobile_phone = new_phone
+        self.phones[number_in_list].value = new_phone
 
     def days_to_birthday(self):
 
@@ -81,8 +81,11 @@ class Record():
     def list_phones(self) -> str:
         phones = ""
 
-        for phone in self.phones:
-            phones += f"{phone.value}|\n"
+        for i, phone in enumerate(self.phones):
+            if i > 0:
+                phones += "|{:^3}|{:^10}|".format(" ", " ")
+            
+            phones += "{:^3}|{:^13}|\n".format(i, phone.value)         
 
         return phones
 
@@ -93,11 +96,12 @@ class Record():
 class AddressBook(UserDict):
 
     def __str__(self):
-        message = "\n|{:^10}|{:^13}|\n".format("User", "Phone")
-        message += "-" * 26 + "\n"
+        message = "\n|{:^3}|{:^10}|{:^3}|{:^13}|\n".format("№", "User", "№", "Phone")
+        message += "-" * 35 + "\n"
 
-        for name, record in self.data.items():
-            message += "|{:^10}|{:<13}|\n".format(name, record.list_phones())
+        for i, (name, record) in enumerate(self.data.items()):
+            message += "|{:^3}|{:^10}|{:^13}".format(
+                i, name, record.list_phones())
         
         return message
 
@@ -110,8 +114,24 @@ class AddressBook(UserDict):
         record.add_phone(new_phone)
         self.data.update({record.name.value: record})        
 
-        return f"The mobile phone {phone} is added to"\
-            "the user '{name}' in the phone book."
+        return f"The mobile phone {phone} is added to "\
+            f"the user '{name}' in the phone book."
+
+    def change_phone_in_record(self, name: str):
+        record = self.data.get(name)
+
+        if not record:
+            return f"User '{name}' not found on phone book."
+
+        print("\nWhat number do you want change")
+        print(self.get_contact(name))
+        number = int(
+            input("Select the number in the order you want to change: "))
+        mobile_phone = input("\nEnter new mobile number: ")
+        record.change_phone(number, mobile_phone)
+
+        return f"User '{name}' changed mobile phone on address book."
+        
 
     def iterator(self, N: int):
         i = 0
@@ -133,12 +153,12 @@ class AddressBook(UserDict):
         return data
 
     def list_contacts(self):
-        try:
-            n = int(input("How many records to show at once. 0 - show all: "))
-            for data in self.iterator(n):
-                print(data)
-                input("Press enter to download the next part ")
+        # try:
+        n = int(input("How many records to show at once. 0 - show all: "))
+        for data in self.iterator(n):
+            print(data)
+            input("Press enter to download the next part ")
 
-        except ValueError:
-            print("\nEnter valid number\n")
+        # except ValueError:
+        #     print("\nEnter valid number\n")
 
