@@ -1,16 +1,19 @@
 def input_error(func):
-    def inner(data: str) -> str:
+    def inner(self, data: str) -> str:
 
         message = "\n" + "-" * 55 + "\n"
 
         try:
-            message += func(data)
+            message += str(func(self, data))
 
         except IndexError as error:
             message += str(error)    
 
         except KeyError:
-            message += "\nThis name not exists.\n" 
+            message += "\nThis name not exists.\n"
+
+        except TypeError as error:
+            message += str(error)
 
         except ValueError as error:
             message += str(error)
