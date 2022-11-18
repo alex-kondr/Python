@@ -4,8 +4,9 @@ import re
 
 class Field:
 
-    def __init__(self):
+    def __init__(self, value):
         self._value = None
+        self.value = value
 
     def __str__(self):
         return f"{type(self)}: {self.value}"
@@ -14,50 +15,50 @@ class Field:
     def value(self):
         return self._value
 
+    @value.setter
+    def value(self, value):
+        self._value = value
+
 
 class Birthday(Field):
 
     @Field.value.setter
     def value(self, birthday: str):
 
-        birthday = re.search("\d{2}\.\d{2}", birthday)  #type: ignore
+        birthday1 = re.search(r"\d{2}\.\d{2}", birthday)
 
-        if not birthday:
+        if not birthday1:
             raise ValueError("Birthday not valid.\n"\
                 "The Birthday should look like '01.01'")
         
-        self._value = datetime.strptime(birthday.group(), "%d.%m")  #type: ignore
+        self._value = datetime.strptime(birthday1.group(), "%d.%m")
 
 
 class Name(Field):
 
-    def __init__(self, name: str):
-        super().__init__()
-        self.value = name
-
     @Field.value.setter
-    def value(self, name: str):
-        if type(name) == str:
-            self._value = name
+    def value(self, value: str):
+        if type(value) == str:
+            self._value = value
 
 
 class Phone(Field):
 
     @Field.value.setter
     def value(self, phone: str):
-        phone = re.search(r"\+380\d{9}", phone)  # type: ignore
+        new_phone = re.search(r"\+380\d{9}", phone)
 
-        if not phone:
+        if not new_phone:
             raise ValueError("Phone number not valid.\n"\
                 "The phone number should look like +380123456789")
         
-        self._value = phone.group()  # type: ignore
+        self._value = new_phone.group()
 
 
 class Record():
 
     def __init__(self, name: Name):
-        self.birthday = Birthday()
+        self.birthday = None
         self.name = name
         self.phones = []
 
@@ -69,7 +70,7 @@ class Record():
 
     def days_to_birthday(self):
 
-        if not self.birthday.value:
+        if not self.birthday:
             raise ValueError("Birthday not specified")
 
         now_date = datetime.now()

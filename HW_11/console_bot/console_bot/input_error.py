@@ -1,10 +1,10 @@
 def input_error(func):
-    def inner(self, data: str) -> str:
+    def inner(data: str) -> str:
 
         message = "\n" + "-" * 55 + "\n"
 
         try:
-            message += str(func(self, data))
+            message += str(func(data))
 
         except IndexError as error:
             message += str(error)    

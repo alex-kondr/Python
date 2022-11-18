@@ -1,20 +1,17 @@
-from address_book import AddressBook
+import actions
 import informations
 
 
-ADDRESS_BOOK = AddressBook()
-
-
 COMMANDS = {
-    "add": ADDRESS_BOOK.add_record,
-    "add_birthday": ADDRESS_BOOK.add_birthday_to_record,
-    "birthday": ADDRESS_BOOK.days_to_birthday,
-    "change": ADDRESS_BOOK.change_phone_in_record,
+    "add": actions.add,
+    "add_birthday": actions.add_birthday,
+    "birthday": actions.days_to_birthday,
+    "change": actions.change_phone,
     "hello": informations.hello,
     "help": informations.help,
-    "phone": ADDRESS_BOOK.get_contact,
-    "remove_phone": ADDRESS_BOOK.remove_phone_in_record,
-    "show_all": ADDRESS_BOOK.list_contacts
+    "phone": actions.get_contact,
+    "remove_phone": actions.remove_phone,
+    "show_all": actions.show_all
 }
 
 
