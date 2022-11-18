@@ -7,7 +7,7 @@ class AddressBook(UserDict):
         message = "\n|{:^3}|{:^10}|{:^3}|{:^13}|\n".format(
             "№", "User", "№", "Phone")
         message += "|" + "-" * 32 + "|\n"
-        i =0
+        i = 0
 
         for name, record in self.data.items():
             if not record.phones:
