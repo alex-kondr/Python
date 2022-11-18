@@ -23,15 +23,15 @@ class Field:
 class Birthday(Field):
 
     @Field.value.setter
-    def value(self, birthday: str):
+    def value(self, data: str):
 
-        birthday1 = re.search(r"\d{2}\.\d{2}", birthday)
+        birthday = re.search(r"\d{2}\.\d{2}", data)
 
-        if not birthday1:
+        if not birthday:
             raise ValueError("Birthday not valid.\n"\
                 "The Birthday should look like '01.01'")
         
-        self._value = datetime.strptime(birthday1.group(), "%d.%m")
+        self._value = datetime.strptime(birthday.group(), "%d.%m")
 
 
 class Name(Field):
