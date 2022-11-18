@@ -1,10 +1,6 @@
 from collections import UserDict
 
 
-from fields import Birthday, Name, Phone, Record
-from input_error import input_error
-
-
 class AddressBook(UserDict):
 
     def __str__(self):
@@ -18,7 +14,7 @@ class AddressBook(UserDict):
         
         return message
 
-    def add_record(self, record: Record):
+    def add_record(self, record):
         self.data.update({record.name.value: record})
 
     def iterator(self, N: int):
@@ -33,4 +29,3 @@ class AddressBook(UserDict):
                 yield data
                 data.clear()
                 i = 0
-                

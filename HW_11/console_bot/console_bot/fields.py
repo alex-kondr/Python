@@ -35,11 +35,7 @@ class Birthday(Field):
 
 
 class Name(Field):
-
-    @Field.value.setter
-    def value(self, value: str):
-        if type(value) == str:
-            self._value = value
+    pass
 
 
 class Phone(Field):
