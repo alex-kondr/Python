@@ -6,7 +6,7 @@ class AddressBook(UserDict):
     def __init__(self):
         super().__init__()
         self.iter_index = 0
-        self.N = 0
+        self.N = 2
         # self.iter_data = None
 
     def __iter__(self):
@@ -15,17 +15,25 @@ class AddressBook(UserDict):
     def __next__(self):
         # i = self.iter_index
         temp = AddressBook()
+        # data = AddressBook()
+        print(self.iter_index, self.N)
+
+        # if self.iter_index == self.N:
+        #     # raise StopIteration
+        #     return "Hello"
 
         for n, (name, record) in enumerate(self.data.items()):
-            temp.update({name: record})
-            self.iter_index += 1
+            if n >= self.iter_index:
+                temp.update({name: record})
+                self.iter_index += 1
 
-            if self.iter_index == self.N or n == len(self.data) - 1:
-                self.iter_index = 0
-                data = temp.copy()
-                temp.clear()
+            if len(temp) == self.N or n == len(self.data) - 1:
+                # self.iter_index = 0
+                # print(temp)
+                # temp.clear()
 
-                return data
+                return temp
+            # raise StopIteration
                 
                 
     def __str__(self):
@@ -58,5 +66,5 @@ class AddressBook(UserDict):
 
             if i == N or n == len(self.data) - 1:
                 yield data
-                data.clear()
+                data = AddressBook()
                 i = 0

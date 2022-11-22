@@ -96,14 +96,18 @@ def remove_phone(name: str) -> str:
 
 def save_data(data, file):
 
-    with open(FILE, "wb") as file:
-        pickle.dump(data, file)
+    with open(file, "wb") as fh:
+        pickle.dump(data, fh)
 
 
 def show_all1(_):
 
-    for data in ADDRESS_BOOK:
-        print(data)
+    # for data in ADDRESS_BOOK:
+    #     print(data)
+    print("Show all")
+    print(next(ADDRESS_BOOK))
+    print(next(ADDRESS_BOOK))
+    print("End show all")
 
 def show_all(_):
     temp = None

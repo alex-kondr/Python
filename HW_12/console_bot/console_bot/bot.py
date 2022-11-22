@@ -11,7 +11,8 @@ COMMANDS = {
     "help": informations.help,
     "phone": actions.get_contact,
     "remove_phone": actions.remove_phone,
-    "show_all": actions.show_all1
+    "show_all": actions.show_all,
+    "show_all1": actions.show_all1
 }
 
 
