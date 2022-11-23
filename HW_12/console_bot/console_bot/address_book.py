@@ -5,36 +5,25 @@ class AddressBook(UserDict):
 
     def __init__(self):
         super().__init__()
-        self.iter_index = 0
-        self.N = 2
-        # self.iter_data = None
+        self.position_in_dict = 0
+        self.N = 0
 
     def __iter__(self):
-        return self        
+        return self
 
     def __next__(self):
-        # i = self.iter_index
-        temp = AddressBook()
-        # data = AddressBook()
-        print(self.iter_index, self.N)
+        data = AddressBook()
 
-        # if self.iter_index == self.N:
-        #     # raise StopIteration
-        #     return "Hello"
+        if self.position_in_dict >= len(self.data):
+            raise StopIteration
 
         for n, (name, record) in enumerate(self.data.items()):
-            if n >= self.iter_index:
-                temp.update({name: record})
-                self.iter_index += 1
-
-            if len(temp) == self.N or n == len(self.data) - 1:
-                # self.iter_index = 0
-                # print(temp)
-                # temp.clear()
-
-                return temp
-            # raise StopIteration
+            if n >= self.position_in_dict and (len(data) < self.N or not self.N):
                 
+                data.update({name: record})
+                self.position_in_dict += 1
+
+        return data                
                 
     def __str__(self):
         message = "\n|{:^3}|{:^10}|{:^3}|{:^13}|\n".format(
@@ -43,28 +32,13 @@ class AddressBook(UserDict):
         i = 0
 
         for name, record in self.data.items():
-            if not record.phones:
-                i -= 1
-            else:
+            if record.phones:
                 message += "|{:^3}|{:^10}|{:^13}".format(
                     i, name, record.list_phones())
             
-            i += 1
+                i += 1
         
         return message
 
     def add_record(self, record):
         self.data.update({record.name.value: record})
-
-    def iterator(self, N: int):
-        i = 0
-        data = AddressBook()
-        
-        for n, (name, record) in enumerate(self.data.items()):
-            data.update({name: record})
-            i += 1
-
-            if i == N or n == len(self.data) - 1:
-                yield data
-                data = AddressBook()
-                i = 0

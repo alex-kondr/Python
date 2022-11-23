@@ -22,7 +22,7 @@ def add(data: str) -> str:
 
 
 @input_error
-def add_birthday(data: str):
+def add_birthday(data: str) -> str:
     name, birthday = data.split()
     record = ADDRESS_BOOK.data.get(name)
 
@@ -30,11 +30,12 @@ def add_birthday(data: str):
         return f"User '{name}' not found on phone book."
 
     record.birthday = Birthday(birthday)
+
     return f"\nBirthday added to user '{name}'"
 
 
 @input_error
-def change_phone(name: str):
+def change_phone(name: str) -> str:
     record = ADDRESS_BOOK.data.get(name)
 
     if not record:
@@ -51,13 +52,19 @@ def change_phone(name: str):
 
 
 @input_error
-def days_to_birthday(name: str) -> str:
+def days_to_birthday(name: str) -> int:
     record = ADDRESS_BOOK.data.get(name, Record(Name(name)))
     return record.days_to_birthday()
 
 
+def find_number(number: str):
+    for name, record in ADDRESS_BOOK:
+        pass
+    pass
+
+
 @input_error
-def get_contact(name: str):
+def get_contact(name: str) -> AddressBook:
     data = AddressBook()
     data.update({name: ADDRESS_BOOK.data.get(name)})
 
@@ -67,13 +74,13 @@ def get_contact(name: str):
     return data
 
 
-def load_data(file, default=AddressBook()):
+def load_data(file, default=AddressBook()) -> AddressBook:
 
-    if file.exists():
-        with open(file, "rb") as fh:
-            return pickle.load(fh)
+    if not file.exists():
+        return default
 
-    return default
+    with open(file, "rb") as fh:
+        return pickle.load(fh)    
 
 
 @input_error
@@ -91,6 +98,9 @@ def remove_phone(name: str) -> str:
         input("Select the number in the order you want to delete: "))
     phone = record.remove_phone(number)
 
+    if not record:
+        pass
+
     return f"\nIn user '{name}' deleted mobile phone '{phone.value}' on address book."
 
 
@@ -100,40 +110,20 @@ def save_data(data, file):
         pickle.dump(data, fh)
 
 
-def show_all1(_):
-
-    # for data in ADDRESS_BOOK:
-    #     print(data)
-    print("Show all")
-    print(next(ADDRESS_BOOK))
-    print(next(ADDRESS_BOOK))
-    print("End show all")
-
-def show_all(_):
-    temp = None
-    is_empty = True
-
-    try:
-        n = int(input("How many records to show at once. 0 - show all: "))
-        generator = ADDRESS_BOOK.iterator(n)
-
-        while True:
-            temp = temp if temp else next(generator)
-            is_empty = False
-            print(temp)
-            temp = next(generator)
+@input_error
+def show_all(_) -> AddressBook:
+    data = AddressBook()
+    ADDRESS_BOOK.position_in_dict = 0
+    input_n = input("How many records to show at once. Press enter to show all: ")
+    ADDRESS_BOOK.N = int(input_n) if input_n else 0    # type: ignore
+    
+    for data in ADDRESS_BOOK:
+        if ADDRESS_BOOK.position_in_dict != len(ADDRESS_BOOK):
+            
+            print(data)
             input("Press enter to download the next part ")
-
-    except StopIteration:
-        message = ""
-        if is_empty:
-            message = "\n|{:^3}|{:^10}|{:^3}|{:^13}|\n".format(
-                "№", "User", "№", "Phone")
-            message += "|" + "-" * 32 + "|\n"
-        return message
-
-    except ValueError:
-        return "\nThis is not number"
-
+    
+    return data
+    
 
 ADDRESS_BOOK = load_data(FILE)
