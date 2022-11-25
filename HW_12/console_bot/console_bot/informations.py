@@ -14,13 +14,15 @@ def help(_) -> str:
         "change": "Changes phone number to name.",
         "Example_4": "change Bob",
         "exit, close": "Exit",
+        "find_contacts": "Find all contacts for mark",
+        "Example_5": "find_contacts Bob, find_contacts +38012",
         "good bye": "",
         "hello": "Prints greetings",
         "help": "Prints info",
         "phone": "Shows the contact's phone number.",
-        "Example_5": "phone Bob",
+        "Example_6": "phone Bob",
         "remove_phone": "Removes mobile phone in user",
-        "Example_6": "remove_phone Bob",
+        "Example_7": "remove_phone Bob",
         "show_all": "Shows all names and phones"
     }
 

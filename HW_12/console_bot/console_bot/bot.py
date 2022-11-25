@@ -7,6 +7,7 @@ COMMANDS = {
     "add_birthday": actions.add_birthday,
     "birthday": actions.days_to_birthday,
     "change": actions.change_phone,
+    "find_contacts": actions.find_contacts,
     "hello": informations.hello,
     "help": informations.help,
     "phone": actions.get_contact,

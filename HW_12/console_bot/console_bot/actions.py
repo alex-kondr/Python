@@ -57,10 +57,14 @@ def days_to_birthday(name: str) -> int:
     return record.days_to_birthday()
 
 
-def find_number(number: str):
-    for name, record in ADDRESS_BOOK:
-        pass
-    pass
+def find_contacts(data: str):
+    contacts = AddressBook()
+    
+    for name, record in ADDRESS_BOOK.data.items():
+        if data in name or data in record.list_phones():
+            contacts.update({name: record})
+            
+    return contacts
 
 
 @input_error
