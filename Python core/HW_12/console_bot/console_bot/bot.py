@@ -1,22 +1,18 @@
 import actions
-# from address_book import AddressBook, Name, Phone, Record
 import informations
 
 
-# ADDRESS_BOOK = actions.ADDRESS_BOOK
-
-
-ACTIONS = {
-    "add": actions.ADDRESS_BOOK.add_record,
-    "change": actions.change,    
-    "phone": actions.ADDRESS_BOOK.get_contact,
-    "remove_phone": actions.remove_phone    
-}
-
-INFORMATIONS = {
+COMMANDS = {
+    "add": actions.add,
+    "add_birthday": actions.add_birthday,
+    "birthday": actions.days_to_birthday,
+    "change": actions.change_phone,
+    "find_contacts": actions.find_contacts,
     "hello": informations.hello,
     "help": informations.help,
-    "show_all": actions.ADDRESS_BOOK.list_contacts
+    "phone": actions.get_contact,
+    "remove_phone": actions.remove_phone,
+    "show_all": actions.show_all
 }
 
 
@@ -28,6 +24,7 @@ def check_exit(data: str):
         if text in data.lower():
             return "\nGood bye\n"
 
+
 def main():
     
     while True:
@@ -37,16 +34,13 @@ def main():
 
         if check_exit(data):
             print(check_exit(data))
+            actions.save_data(actions.ADDRESS_BOOK, actions.FILE)
             quit()
 
-        elif command in ACTIONS:
+        elif command in COMMANDS:
             data = data[len(command)+1:]
-            command = ACTIONS[command]
+            command = COMMANDS[command]
             message = command(data)
-
-        elif command in INFORMATIONS:
-            command = INFORMATIONS[command]
-            message = command()
 
         else:
             message = "\n" + "-" * 50 + "\n"
