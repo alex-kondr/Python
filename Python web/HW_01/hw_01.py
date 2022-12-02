@@ -1,17 +1,38 @@
 #1
+from abc import ABCMeta, abstractmethod
+import json
+import pickle
 
-class SerializationInterface(type):
-    pass
+class SerializationInterface(metaclass=ABCMeta):
+    
+    @abstractmethod
+    def serialize(self, filename):
+        pass
+
+
+class SerializeJSON(SerializationInterface):
+
+    def serialize(self, filename, data):
+
+        with open(filename, "w", newline="") as fh:
+            json.dump(data, fh)
+
+
+class SerializeBin(SerializationInterface):
+
+    def serialize(self, filename):
+
+        with open(filename, "wb") as fh:
+            pickle.dump(self, fh)
+
 
 #2
-
-
 class Meta(type):
     children_number = 0
     class_number = 0
 
     def __new__(*args):
-        args[0].children_number += 1       
+        Meta.children_number += 1       
 
         return type.__new__(*args)
 
@@ -21,6 +42,7 @@ class Meta(type):
 
 
 Meta.children_number = 0
+
 
 class Cls1(metaclass=Meta):
 
@@ -37,3 +59,4 @@ class Cls2(metaclass=Meta):
 assert (Cls1.class_number, Cls2.class_number) == (0, 1)
 a, b = Cls1(""), Cls2("")
 assert (a.class_number, b.class_number) == (0, 1)
+
