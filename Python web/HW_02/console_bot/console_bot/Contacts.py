@@ -103,13 +103,15 @@ class Record:
         fields = ""
 
         for i, (type, list_field) in enumerate(self.fields.items()):
+            temp = ""
             
             for field in list_field:
+                temp += field.value + "|"
                 
             # if i > 0:
             #     fields += "|{:^3}|{:^10}|{:^10}|".format(" ", " ", " ")
 
-            fields += "{:^3}|{:^13}|{:^13}|\n".format(i, type, list_field[0].value)
+            fields += "{:^3}|{:^10}|{:^13}|\n".format(i, type, temp[:-1])
 
         return fields
 
@@ -122,6 +124,6 @@ phone = Phone("+380509228158")
 record.add_contact(phone)
 
 email = Email("456")
-print(type(email))
 record.add_contact(email)
-print(record.list_phones())
+
+print(record.list_fields())
