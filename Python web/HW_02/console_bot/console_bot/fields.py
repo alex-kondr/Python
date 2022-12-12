@@ -1,3 +1,4 @@
+
 from datetime import datetime
 import re
 
@@ -34,8 +35,13 @@ class Birthday(Field):
         self._value = datetime.strptime(birthday.group(), "%d.%m")
 
 
+
+
+
 class Name(Field):
     pass
+
+
 
 
 class Phone(Field):
@@ -49,9 +55,9 @@ class Phone(Field):
                 "The phone number should look like +380123456789")
         
         self._value = new_phone.group()
+        
 
-
-class Record():
+class Record:
 
     def __init__(self, name: Name):
         self.birthday = None
