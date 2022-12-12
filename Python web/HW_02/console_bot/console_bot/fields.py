@@ -35,13 +35,8 @@ class Birthday(Field):
         self._value = datetime.strptime(birthday.group(), "%d.%m")
 
 
-
-
-
 class Name(Field):
     pass
-
-
 
 
 class Phone(Field):

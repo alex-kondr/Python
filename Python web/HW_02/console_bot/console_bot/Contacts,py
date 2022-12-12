@@ -1,14 +1,20 @@
 from abc import ABCMeta, abstractmethod
+from datetime import datetime
+import re
 
 
-class Field:
+class Field(metaclass=ABCMeta):
 
     def __init__(self, value):
         self._value = None
         self.value = value
+   
+    @abstractmethod
+    def list_values(self):
+        pass
 
-    def __str__(self):
-        return f"{type(self)}: {self.value}"
+    def type(self):
+        return type(self).__name__
 
     @property
     def value(self):
@@ -19,34 +25,62 @@ class Field:
         self._value = value
 
 
-class Contacts(metaclass=ABCMeta):    
+class Birthday(Field):
 
-    @abstractmethod
-    def list_values(self):
-        pass
+    @Field.value.setter
+    def value(self, data: str):
 
-    
-    def type(self):
-        return type(self).__name__
+        birthday = re.search(r"\d{2}\.\d{2}", data)
 
+        if not birthday:
+            raise ValueError("Birthday not valid.\n"
+                             "The Birthday should look like '01.01'")
 
-class Address(Contacts):
-
-    def list_values(self):
-        pass
-
-
-class Email(Contacts):
+        self._value = datetime.strptime(birthday.group(), "%d.%m")
 
     def list_values(self):
         pass
 
 
-class Phone(Contacts):
+class Address(Field):
 
     def list_values(self):
         pass
 
+
+class Email(Field):
+
+    def list_values(self):
+        pass
+
+
+class Name(Field):
+    pass
+
+
+class Phone(Field):
+
+    @Field.value.setter
+    def value(self, phone: str):
+        new_phone = re.search(r"\+380\d{9}", phone)
+
+        if not new_phone:
+            raise ValueError("Phone number not valid.\n"\
+                "The phone number should look like +380123456789")
+        
+        self._value = new_phone.group()
+
+    def list_values(self):
+        pass
+        # fields = ""
+
+        # for i, field in enumerate(self.fields):
+        #     if i > 0:
+        #         fields += "|{:^3}|{:^10}|".format(" ", " ")
+
+        #     fields += "{:^3}|{:^13}|\n".format(i, field.value)
+
+        # return fields
 
 
 class Record:
@@ -55,27 +89,39 @@ class Record:
 
         self.birthday = None
         self.name = name
-        self.contacts = {}
+        self.fields = {}
 
-    def add_contact(self, contact: Contacts):
+    def add_contact(self, field: Field):
 
-        if not self.contacts.get(contact.type()):
-            self.contacts.update({contact.type(): [contact]})
+        if not self.fields.get(field.type()):
+            self.fields.update({field.type(): [field]})
         
         else:
-            self.contacts[contact.type()].append(contact)
+            self.fields[field.type()].append(field)
+
+    def list_fields(self) -> str:
+        fields = ""
+
+        for i, (type, list_field) in enumerate(self.fields.items()):
+            
+            for field in list_field:
+                
+            # if i > 0:
+            #     fields += "|{:^3}|{:^10}|{:^10}|".format(" ", " ", " ")
+
+            fields += "{:^3}|{:^13}|{:^13}|\n".format(i, type, list_field[0].value)
+
+        return fields
 
 
-phone = Phone()
-phone.number = "38050"
+phone = Phone("+380509228157")
 record = Record("111")
 record.add_contact(phone)
 
-phone = Phone()
-phone.number = "38051"
+phone = Phone("+380509228158")
 record.add_contact(phone)
 
-email = Email()
-email.value = "456"
+email = Email("456")
+print(type(email))
 record.add_contact(email)
-print(record.contacts)
+print(record.list_phones())
