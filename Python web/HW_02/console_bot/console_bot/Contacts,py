@@ -1,0 +1,81 @@
+from abc import ABCMeta, abstractmethod
+
+
+class Field:
+
+    def __init__(self, value):
+        self._value = None
+        self.value = value
+
+    def __str__(self):
+        return f"{type(self)}: {self.value}"
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
+
+
+class Contacts(metaclass=ABCMeta):    
+
+    @abstractmethod
+    def list_values(self):
+        pass
+
+    
+    def type(self):
+        return type(self).__name__
+
+
+class Address(Contacts):
+
+    def list_values(self):
+        pass
+
+
+class Email(Contacts):
+
+    def list_values(self):
+        pass
+
+
+class Phone(Contacts):
+
+    def list_values(self):
+        pass
+
+
+
+class Record:
+
+    def __init__(self, name):
+
+        self.birthday = None
+        self.name = name
+        self.contacts = {}
+
+    def add_contact(self, contact: Contacts):
+
+        if not self.contacts.get(contact.type()):
+            self.contacts.update({contact.type(): [contact]})
+        
+        else:
+            self.contacts[contact.type()].append(contact)
+
+
+phone = Phone()
+phone.number = "38050"
+record = Record("111")
+record.add_contact(phone)
+
+phone = Phone()
+phone.number = "38051"
+record.add_contact(phone)
+
+email = Email()
+email.value = "456"
+record.add_contact(email)
+print(record.contacts)
