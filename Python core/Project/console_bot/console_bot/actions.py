@@ -2,7 +2,7 @@ from pathlib import Path
 import pickle
 
 from address_book import AddressBook
-from Contacts import Address, Birthday, Email, Name, Phone, Record
+from fields import Address, Birthday, Email, Name, Phone, Record
 from input_error import input_error
 
 
@@ -47,9 +47,9 @@ def change_field(name: str) -> str:
     if not record:
         raise ValueError(f"User '{name}' not found on address book.")
 
-    type_field = input("Enter type field: ") # need upper case
+    type_field = input("Enter type field: ").title()
 
-    name_type_field = name + type_field
+    name_type_field = name + " " + type_field
     
     print(get_contact_for_type(name_type_field))
     
@@ -71,9 +71,12 @@ def find_contacts(data: str):
     contacts = AddressBook()
     
     for name, record in ADDRESS_BOOK.data.items():
-        if data in name or data in record.list_phones():
-            contacts.update({name: record})
-            
+        for fields in record.fields.values():
+            values = [field.value for field in fields if data in field.value]
+
+            if values or data in name:
+                contacts.update({name: record})
+
     return contacts
 
 
@@ -87,7 +90,7 @@ def get_contact_for_type(name_type_field: str) -> AddressBook:
     if not record:
         raise ValueError(f"User '{name}' not found on phone book.")
 
-    for field in record.field[type_field]:
+    for field in record.fields[type_field.title()]:
         data_record.add_field(field)
 
     data.update({name: data_record})
@@ -105,7 +108,8 @@ def load_data(file, default=AddressBook()) -> AddressBook:
 
 
 @input_error
-def remove_field(name: str) -> str:
+def remove_field(name_type_field: str) -> str:
+    name, type_field = name_type_field.split()
     record = ADDRESS_BOOK.data.get(name)
 
     if not record:
@@ -113,13 +117,13 @@ def remove_field(name: str) -> str:
             f"User '{name}' not found on phone book or phone number not valid.\n")
 
     print("\nWhat number do you want delete?")
-    print(get_contact_for_type(name))
+    print(get_contact_for_type(name_type_field))
 
     number = int(
         input("Select the number in the order you want to delete: "))
-    phone = record.remove_field(number)
+    field = record.remove_field(number, type_field.title())
 
-    return f"\nIn user '{name}' deleted mobile phone '{phone.value}' on address book."
+    return f"\nIn user '{name}' deleted {type_field} '{field.value}' on address book."
 
 
 def save_data(data, file):
@@ -146,21 +150,31 @@ def show_all(_) -> AddressBook:
 
 ADDRESS_BOOK = load_data(FILE)
 
-add("Bob phone +380123456789")
-add("Bob phone +380509228157")
-add("Bob email 456")
-add("Bob email 789")
-add("Bob email 789")
-add("Bob phone +380123456789")
-add("Bob phone +380509228157")
-add("Bob email 456")
-add("Bob email 789")
-add("Bob email 789")
-add("alex phone +380123456789")
-add("alex phone +380509228157")
-add("alex email 456")
-add("alex email 789")
-add("alex email 789")
+# add("Bob phone +380123456789")
+# add("Bob phone +380509228157")
+# add("Bob email 456")
+# add("Bob email 789")
+# add("Bob email 789")
+# add("Bob phone +380123456789")
+# add("Bob phone +380509228157")
+# add("Bob email 456")
+# add("Bob email 789")
+# add("Bob email 789")
+# add("alex phone +380123456789")
+# add("alex phone +380509228157")
+# add("alex email 456")
+# add("alex1 email 789")
+# add("alex email 789")
+
+# record = ADDRESS_BOOK.data["Bob"]
+# fields = record.fields["Phone"]
+
+# a = [field.value for field in fields]
+# print(a)
+
+# headers = ["№", "User", "№", "Type", "№", "Value"]
+# tabular = interface.TabularInterface(headers)
+# print(tabular.dict_in_table(ADDRESS_BOOK.data))
 
 # print(ADDRESS_BOOK)
 # phone = Phone("+380509228157")
