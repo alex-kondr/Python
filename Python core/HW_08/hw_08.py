@@ -15,7 +15,7 @@ def get_birthdays_per_week(users: list) -> dict:
         elif day:
             birth_users[day] = [user["name"]]
 
-    print(birth_users)
+    return birth_users
 
 def day_of_celebration(birthday: datetime) -> str:
     # If birthday is the next week returns day of week
