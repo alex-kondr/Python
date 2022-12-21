@@ -20,3 +20,4 @@ Python web/HW_02/console_bot/console_bot/__pycache__/address_book.cpython-310.py
 Python web/HW_02/console_bot/console_bot/__pycache__/fields.cpython-310.pyc
 Python web/HW_02/console_bot/console_bot/__pycache__/informations.cpython-310.pyc
 Python web/HW_02/console_bot/console_bot/__pycache__/input_error.cpython-310.pyc
+*.bin

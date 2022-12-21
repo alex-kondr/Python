@@ -39,7 +39,15 @@ class Birthday(Field):
 
 
 class Email(Field):
-    pass
+
+    @Field.value.setter
+    def value(self, email: str):
+        new_email = re.search(r".+@.+", email)
+
+        if not new_email:
+            raise ValueError("Email not valid.")
+
+        self._value = new_email.group()
 
 
 class Name(Field):
@@ -69,11 +77,12 @@ class Record:
 
     def add_field(self, field: Field):
 
-        if not self.fields.get(field.type()):
-            self.fields.update({field.type(): [field]})
+        if self.fields.get(field.type()):
+            self.fields[field.type()].append(field)
         
         else:
-            self.fields[field.type()].append(field)
+            self.fields.update({field.type(): [field]})
+            
 
     def change_field(self, type_field: str, number_in_list: int, new_field: str):
         self.fields[type_field][number_in_list].value = new_field
