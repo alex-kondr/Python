@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "my first bot"
+version = "1.0.0"
+authors = [{ name = "Alex Kondr"}]
+description = "Small program"
+readme = "README.md"
+
+# requires-python = ">=3.10"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+prompt-toolkit = "^3.0.36"
+
+[tool.setuptools.packages.find]
+where = ["console_bot"]
+
+[project.scripts]
+my_bot = "bot:main"

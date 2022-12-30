@@ -1,8 +1,9 @@
+from abc import ABC, abstractmethod
 from datetime import datetime
 import re
 
 
-class Field:
+class Field(ABC):
 
     def __init__(self, value):
         self._value = None
@@ -15,13 +16,18 @@ class Field:
     def value(self):
         return self._value
 
+    
     @value.setter
+    @abstractmethod
     def value(self, value):
-        self._value = value
+        pass
 
 
 class Address(Field):
-    pass
+
+    @Field.value.setter
+    def value(self, value: str):
+        self._value = value
 
 
 class Birthday(Field):
@@ -39,11 +45,17 @@ class Birthday(Field):
 
 
 class Email(Field):
-    pass
+
+    @Field.value.setter
+    def value(self, value: str):
+        self._value = value
 
 
 class Name(Field):
-    pass
+    
+    @Field.value.setter
+    def value(self, value: str):
+        self._value = value
 
 
 class Phone(Field):
@@ -87,6 +99,11 @@ class Record:
         birthday = self.birthday.value.replace(year=now_date.year)
 
         return (birthday - now_date).days + 1    
+
+    def types_of_fields(self) -> list:
+        fields = ["№", "Name"]
+        fields += [field for field in self.fields]
+        return fields
 
     def remove_field(self, number_in_list: int, type_field: str):
         return self.fields[type_field].pop(number_in_list)
