@@ -6,12 +6,12 @@ COMMANDS = {
     "add": actions.add,
     "add_birthday": actions.add_birthday,
     "birthday": actions.days_to_birthday,
-    "change": actions.change_phone,
+    "contact": actions.get_contact_for_type,
+    "change": actions.change_field,
     "find_contacts": actions.find_contacts,
     "hello": informations.hello,
-    "help": informations.help,
-    "phone": actions.get_contact,
-    "remove_phone": actions.remove_phone,
+    "help": informations.help,    
+    "remove_field": actions.remove_field,
     "show_all": actions.show_all
 }
 

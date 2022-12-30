@@ -1,4 +1,3 @@
-
 from datetime import datetime
 import re
 
@@ -9,8 +8,8 @@ class Field:
         self._value = None
         self.value = value
 
-    def __str__(self):
-        return f"{type(self)}: {self.value}"
+    def type(self):
+        return type(self).__name__
 
     @property
     def value(self):
@@ -21,6 +20,10 @@ class Field:
         self._value = value
 
 
+class Address(Field):
+    pass
+
+
 class Birthday(Field):
 
     @Field.value.setter
@@ -29,10 +32,14 @@ class Birthday(Field):
         birthday = re.search(r"\d{2}\.\d{2}", data)
 
         if not birthday:
-            raise ValueError("Birthday not valid.\n"\
+            raise ValueError("Birthday not valid.\n"
                 "The Birthday should look like '01.01'")
-        
+
         self._value = datetime.strptime(birthday.group(), "%d.%m")
+
+
+class Email(Field):
+    pass
 
 
 class Name(Field):
@@ -50,20 +57,26 @@ class Phone(Field):
                 "The phone number should look like +380123456789")
         
         self._value = new_phone.group()
-        
+
 
 class Record:
 
     def __init__(self, name: Name):
+
         self.birthday = None
         self.name = name
-        self.phones = []
+        self.fields = {}
 
-    def add_phone(self, phone: Phone):
-        self.phones.append(phone)
+    def add_field(self, field: Field):
 
-    def change_phone(self, number_in_list: int, new_phone: str):        
-        self.phones[number_in_list].value = new_phone
+        if not self.fields.get(field.type()):
+            self.fields.update({field.type(): [field]})
+        
+        else:
+            self.fields[field.type()].append(field)
+
+    def change_field(self, type_field: str, number_in_list: int, new_field: str):
+        self.fields[type_field][number_in_list].value = new_field
 
     def days_to_birthday(self):
 
@@ -73,18 +86,7 @@ class Record:
         now_date = datetime.now()
         birthday = self.birthday.value.replace(year=now_date.year)
 
-        return  (birthday - now_date).days + 1
+        return (birthday - now_date).days + 1    
 
-    def list_phones(self) -> str:
-        phones = ""
-
-        for i, phone in enumerate(self.phones):
-            if i > 0:
-                phones += "|{:^3}|{:^10}|".format(" ", " ")
-            
-            phones += "{:^3}|{:^13}|\n".format(i, phone.value)         
-
-        return phones
-
-    def remove_phone(self, number_in_list: int):
-        return self.phones.pop(number_in_list)
+    def remove_field(self, number_in_list: int, type_field: str):
+        return self.fields[type_field].pop(number_in_list)
