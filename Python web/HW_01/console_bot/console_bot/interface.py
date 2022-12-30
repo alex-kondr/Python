@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from termcolor import colored
 
-from fields import Record, Name
+from fields import *
 
 
 class OneLine(ABC):
@@ -19,22 +19,24 @@ class Header(OneLine):
     def print_line(self):
         
         header = "\n|" + "-" * (18 * (len(self.types_of_fields) // 2) - 1) + "|"
-        # print("header: ", header)
-
         columns = "\n" + "|{:^3}|{:^13}" * (len(self.types_of_fields) // 2)  + "|"
-        # print("columns: ", len(columns))
-
         header += columns.format(*self.types_of_fields)
         header += "\n|" + "-" * (18 * (len(self.types_of_fields) // 2) - 1) + "|"
 
-        print(header)
+        return header
 
 
 name = Name("alex")
 record = Record(name)
+phone = Phone("+380121234556")
+birth = Birthday("01.01")
+record.add_field(birth)
+record.add_field(phone)
+
+
 # print(record.types_of_fields())
 header = Header(record)
-header.print_line()
+print(header.print_line())
 
 
 

@@ -9,7 +9,7 @@ class Field(ABC):
         self._value = None
         self.value = value
 
-    def type(self):
+    def type_of_field(self):
         return type(self).__name__
 
     @property
@@ -75,34 +75,38 @@ class Record:
 
     def __init__(self, name: Name):
 
-        self.birthday = None
-        self.name = name
-        self.fields = {}
+        # self.birthday = None
+        # self.name = name
+        self.fields = {name.type_of_field(): [name]}
 
     def add_field(self, field: Field):
 
-        if not self.fields.get(field.type()):
-            self.fields.update({field.type(): [field]})
+        if not self.fields.get(field.type_of_field()):
+            self.fields.update({field.type_of_field(): [field]})
         
         else:
-            self.fields[field.type()].append(field)
+            self.fields[field.type_of_field()].append(field)
 
     def change_field(self, type_field: str, number_in_list: int, new_field: str):
         self.fields[type_field][number_in_list].value = new_field
 
-    def days_to_birthday(self):
+    # def days_to_birthday(self):
 
-        if not self.birthday:
-            raise ValueError("Birthday not specified")
+    #     if not self.birthday:
+    #         raise ValueError("Birthday not specified")
 
-        now_date = datetime.now()
-        birthday = self.birthday.value.replace(year=now_date.year)
+    #     now_date = datetime.now()
+    #     birthday = self.birthday.value.replace(year=now_date.year)
 
-        return (birthday - now_date).days + 1    
+    #     return (birthday - now_date).days + 1    
 
     def types_of_fields(self) -> list:
-        fields = ["№", "Name"]
-        fields += [field for field in self.fields]
+
+        fields = []
+
+        for type_of_field in self.fields:
+            fields += ["№", type_of_field]
+        
         return fields
 
     def remove_field(self, number_in_list: int, type_field: str):
