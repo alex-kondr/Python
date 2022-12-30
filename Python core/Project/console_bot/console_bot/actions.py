@@ -1,12 +1,13 @@
 from pathlib import Path
 import pickle
 
-from address_book import AddressBook
+from address_book import AddressBook, Note
 from fields import Address, Birthday, Email, Name, Phone, Record
 from input_error import input_error
 
 
-FILE = Path("address_book.bin")
+ADDRESS_BOOK_FILE = Path("address_book.bin")
+NOTE_FILE = Path("note.bin")
 
 TYPE_FIELD = {
     "address": Address,
@@ -17,7 +18,7 @@ TYPE_FIELD = {
 
 @input_error
 def add(data: str) -> str:
-    name, type_field, value = data.split()
+    name, type_field, value = data.split(maxsplit=2)
     new_field = TYPE_FIELD[type_field](value)
     record = ADDRESS_BOOK.data.get(name, Record(Name(name)))
     record.add_field(new_field)
@@ -33,11 +34,29 @@ def add_birthday(data: str) -> str:
     record = ADDRESS_BOOK.data.get(name)
 
     if not record:
-        return f"User '{name}' not found on phone book."
+        return f"User '{name}' not found on address book."
 
     record.birthday = Birthday(birthday)
 
     return f"\nBirthday added to user '{name}'"
+
+
+@input_error
+def add_note(data: str) -> None:
+
+    short, long = data.split(maxsplit=1)
+    NOTE.add_note(short, long)
+
+
+def contacts_celebrate_birthday(days: int) -> AddressBook:
+
+    contacts = AddressBook()
+
+    for name, record in ADDRESS_BOOK.data.items():
+        if days_to_birthday(name) == days:
+            contacts.add_record(record)
+
+    return contacts
 
 
 @input_error
@@ -67,17 +86,27 @@ def days_to_birthday(name: str) -> int:
     return record.days_to_birthday()
 
 
-def find_contacts(data: str):
+def find_contacts(data: str) -> AddressBook:
     contacts = AddressBook()
     
     for name, record in ADDRESS_BOOK.data.items():
         for fields in record.fields.values():
-            values = [field.value for field in fields if data in field.value]
+            for field in fields:
 
-            if values or data in name:
-                contacts.update({name: record})
+                if (data in field.value) or (data in name):
+                    contacts.update({name: record})
 
     return contacts
+
+
+def find_note(data: str) -> Note:
+    note = Note()
+
+    for short, long in NOTE.items():
+        if data in short or data in long:
+            note.add_note(short, long)
+
+    return note
 
 
 @input_error
@@ -98,7 +127,7 @@ def get_contact_for_type(name_type_field: str) -> AddressBook:
     return data
 
 
-def load_data(file, default=AddressBook()) -> AddressBook:
+def load_data(file, default):
 
     if not file.exists():
         return default
@@ -146,9 +175,15 @@ def show_all(_) -> AddressBook:
             input("Press enter to download the next part ")
     
     return data
+
+
+def show_notes(_):
+    return NOTE.data
     
 
-ADDRESS_BOOK = load_data(FILE)
+ADDRESS_BOOK = load_data(ADDRESS_BOOK_FILE, default=AddressBook())
+NOTE = load_data(NOTE_FILE, default=Note())
+
 
 # add("Bob phone +380123456789")
 # add("Bob phone +380509228157")

@@ -36,6 +36,12 @@ class AddressBook(UserDict):
         self.data.update({record.name.value: record})
 
 
+class Note(UserDict):
+    
+    def add_note(self, short, long):
+        self.data.update({short: long})
+
+
 class TabularInterface:
 
     def __init__(self, headers: list):
@@ -45,7 +51,7 @@ class TabularInterface:
 
     def dict_in_table(self, address_book):
         output_table = self.header
-
+        
         for i, (name, record) in enumerate(address_book.items()):
             for j, (type_field, fields) in enumerate(record.fields.items()):
                 for k, field in enumerate(fields):
