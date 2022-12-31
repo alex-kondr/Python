@@ -7,7 +7,7 @@ from fields import *
 class OneLine(ABC):
 
     @abstractmethod
-    def print_line(self):
+    def create_line(self):
         pass
 
 
@@ -16,7 +16,7 @@ class Header(OneLine):
     def __init__(self, record: Record) -> None:
         self.types_of_fields = record.types_of_fields()
 
-    def print_line(self):
+    def create_line(self):
         
         header = "\n|" + "-" * (18 * (len(self.types_of_fields) // 2) - 1) + "|"
         columns = "\n" + "|{:^3}|{:^13}" * (len(self.types_of_fields) // 2)  + "|"
@@ -29,14 +29,14 @@ class Header(OneLine):
 name = Name("alex")
 record = Record(name)
 phone = Phone("+380121234556")
-birth = Birthday("01.01")
-record.add_field(birth)
+# birth = Birthday("01.01")
+# record.add_field(birth)
 record.add_field(phone)
 
 
 # print(record.types_of_fields())
-header = Header(record)
-print(header.print_line())
+# header = Header(record)
+# print(header.create_line())
 
 
 
@@ -45,9 +45,32 @@ class LineOfField(OneLine):
     def __init__(self, record: Record) -> None:
         self.record = record
 
-    def print_line(self):
-        pass
+    def create_line(self):
+        line = ""
+        columns = "\n" + "|{:^3}|{:^13}" * \
+            (len(self.record.types_of_fields()) // 2) + "|"
 
+        all_table = [list_fields.list_values() for list_fields in record.data.values()]
+        # print(all_table)
+        max_len_table = len(max(all_table, key=lambda table: len(table)))
+
+        for i in range(max_len_table):
+            cells = []
+
+            for table in all_table:
+
+                table = table[i] if i < len(table) else ""
+                cells.append(table)
+
+            line += columns.format(*cells)
+
+        line += "\n|" + "-" * 117 + "|"
+
+        return line
+
+
+line_of_field = LineOfField(record)
+print(line_of_field.create_line())
 
 
 
