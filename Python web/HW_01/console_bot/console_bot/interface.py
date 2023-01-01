@@ -4,19 +4,19 @@ from termcolor import colored
 from fields import *
 
 
-class OneLine(ABC):
+class Table(ABC):
 
     @abstractmethod
-    def create_line(self):
+    def create_table(self):
         pass
 
 
-class Header(OneLine):
+class Header(Table):
 
     def __init__(self, record: Record) -> None:
         self.types_of_fields = record.types_of_fields()
 
-    def create_line(self):
+    def create_table(self):
         
         header = "\n|" + "-" * (18 * (len(self.types_of_fields) // 2) - 1) + "|"
         columns = "\n" + "|{:^3}|{:^13}" * (len(self.types_of_fields) // 2)  + "|"
@@ -26,14 +26,14 @@ class Header(OneLine):
         return header
 
 
-class LineOfField(OneLine):
+class TableForContact(Table):
 
     def __init__(self, record: Record) -> None:
         self.record = record
 
-    def create_line(self):
+    def create_table(self):
         line = ""
-        columns = "|{:^3}|{:^13}" * (len(self.record.types_of_fields()) // 2) + "|\n"
+        columns = "\n" + "|{:^3}|{:^13}" * (len(self.record.types_of_fields()) // 2) + "|"
 
         all_table = [list_fields.list_values() for list_fields in self.record.data.values()]
         max_len_table = len(max(all_table, key=lambda table: len(table)))
@@ -49,7 +49,7 @@ class LineOfField(OneLine):
 
             line += columns.format(*cells)
 
-        line += "|" + "-" * (18 * (len(self.record.types_of_fields()) // 2) - 1) + "|"
+        line += "\n|" + "-" * (18 * (len(self.record.types_of_fields()) // 2) - 1) + "|"
 
         return line
 

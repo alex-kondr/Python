@@ -33,7 +33,20 @@ class AddressBook(UserDict):
         return tabular.dict_in_table(self.data)
 
     def add_record(self, record):
-        self.data.update({record.name.value: record})
+        self.data.update({record["Name"][0].value: record})
+
+    def max_column(self):
+        max_len = 0
+        columns = []
+        for record in self.data.values():
+            fields = [field for field in record]
+            
+            if len(fields) > max_len:
+                columns = fields
+                max_len = len(fields)
+        
+        return columns
+
 
 
 class TabularInterface:

@@ -6,10 +6,12 @@ import re
 
 class Field(ABC):
 
-    list_fields = {}
+    list_type_fields = {}
 
     def __init_subclass__(cls) -> None:
-        Field.list_fields.update({cls.__name__: cls})
+        Field.list_type_fields.update(
+            {cls.__name__.lower(): cls}
+        )
 
     def __init__(self, value):
         self._value = None
@@ -45,14 +47,14 @@ class Birthday(Field):
     @Field.value.setter
     def value(self, data: str):
 
-        birthday = re.search(r"\d{2}\.\d{2}", data)
+        birthday = re.search(r"\d{2}\.\d{2}.\d{4}", data)
 
         if not birthday:
             raise ValueError("Birthday not valid.\n"
-                "The Birthday should look like '01.01'")
+                "The Birthday should look like '01.01.1900'")
 
         self._value = birthday.group()
-        self.birthday = datetime.strptime(birthday.group(), "%d.%m")
+        self.birthday = datetime.strptime(birthday.group(), "%d.%m.%Y")
         
 
 
@@ -100,7 +102,7 @@ class Record(UserDict):
 
     def __init__(self, name: Name):
         super().__init__()
-
+        
         list_fields = ListFields(name.type_of_field())
         list_fields.add_field(name)
         self.data.update({name.type_of_field(): list_fields})
@@ -114,15 +116,17 @@ class Record(UserDict):
     def change_field(self, type_field: str, number_in_list: int, new_field: str) -> None:
         self.data[type_field][number_in_list].value = new_field
 
-    # def days_to_birthday(self):
+    def days_to_birthday(self):
 
-    #     if not self.birthday:
-    #         raise ValueError("Birthday not specified")
+        birthday = self.data.get("Birthday")
 
-    #     now_date = datetime.now()
-    #     birthday = self.birthday.value.replace(year=now_date.year)
+        if not birthday:
+            raise ValueError("Birthday not specified")
 
-    #     return (birthday - now_date).days + 1    
+        now_date = datetime.now()
+        birthday = birthday[0].birthday.replace(year=now_date.year)
+
+        return (birthday - now_date).days + 1    
 
     def types_of_fields(self) -> list:
 

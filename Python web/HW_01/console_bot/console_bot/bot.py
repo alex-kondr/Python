@@ -1,55 +1,47 @@
-import actions
-import informations
-
-
-COMMANDS = {
-    "add": actions.add,
-    "add_birthday": actions.add_birthday,
-    "birthday": actions.days_to_birthday,
-    "contact": actions.get_contact_for_type,
-    "change": actions.change_field,
-    "find_contacts": actions.find_contacts,
-    "hello": informations.hello,
-    "help": informations.help,    
-    "remove_field": actions.remove_field,
-    "show_all": actions.show_all
-}
-
-
-def check_exit(data: str):
-
-    exit = ("good bye", "exit", "close")
-
-    for text in exit:
-        if text in data.lower():
-            return "\nGood bye\n"
+from actions import Action, ADDRESS_BOOK
+from interface import Header, TableForContact
+from fields import Record, Name
 
 
 def main():
-    
+
     while True:
 
         data = input("\nPlease enter your command: ")
-        command = data.lower().split()[0] if data else ""
+        list_input_command = data.lower().split()
 
-        if check_exit(data):
-            print(check_exit(data))
-            actions.save_data(actions.ADDRESS_BOOK, actions.FILE)
-            quit()
+        while len(list_input_command) < 4:
+            list_input_command += [""]
 
-        elif command in COMMANDS:
-            data = data[len(command)+1:]
-            command = COMMANDS[command]
-            message = command(data)
+        # print(list_input_command)
 
-        else:
-            message = "\n" + "-" * 50 + "\n"
-            message += "Enter valid command.\n"\
-                "Please enter help for more information."
-            message += "\n" + "-" * 50 + "\n"
+        command, type_field, name, *value = list_input_command
+        # print(command)
+        # print(Action.list_actions)
 
-        print(message)
+        action = Action.list_actions.get(command)()  #type: ignore
+        print(action.execute(name, type_field, value[0]))
+        # record = ADDRESS_BOOK.data.get(name, Record(Name(name)))
+
+        
+        # header = Header(record)
+        # one_line = TableForContact(record)
+        # line = header.create_line()
+        # line += one_line.create_line()
+        # print(line)
+
+
 
 
 if __name__ == "__main__":
     main()
+
+# command = "add".lower()
+# type_field = "phone".lower()
+# name = "alex"
+# value = "+380509228157"
+
+# action = Action.list_actions.get(command)()
+# # print(action)
+# print(action.execute(name, type_field, value))
+# print(ADDRESS_BOOK.data)
