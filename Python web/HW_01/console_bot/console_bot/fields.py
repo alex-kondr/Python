@@ -38,6 +38,10 @@ class Address(Field):
 
 class Birthday(Field):
 
+    def __init__(self, value):
+        super().__init__(value)
+        self.birthday = None
+
     @Field.value.setter
     def value(self, data: str):
 
@@ -47,7 +51,9 @@ class Birthday(Field):
             raise ValueError("Birthday not valid.\n"
                 "The Birthday should look like '01.01'")
 
-        self._value = datetime.strptime(birthday.group(), "%d.%m")
+        self._value = birthday.group()
+        self.birthday = datetime.strptime(birthday.group(), "%d.%m")
+        
 
 
 class Email(Field):
@@ -87,11 +93,7 @@ class ListFields(UserList):
         self.data.append(field)
 
     def list_values(self) -> list:
-        # values = [field.value for field in self.data]
-        return [field.value for i, field in enumerate(self.data)]
-
-        # for field in self.data:
-
+        return [field.value for field in self.data]
 
 
 class Record(UserDict):
@@ -99,28 +101,17 @@ class Record(UserDict):
     def __init__(self, name: Name):
         super().__init__()
 
-        # self.birthday = None
-        # self.name = name
         list_fields = ListFields(name.type_of_field())
         list_fields.add_field(name)
         self.data.update({name.type_of_field(): list_fields})
 
-    def add_field(self, field: Field):
-
-        # list_fields = ListFields()
-        # list_fields.add_field(field)
+    def add_field(self, field: Field) -> None:
 
         list_fields = self.data.get(field.type_of_field(), ListFields(field.type_of_field()))
         list_fields.add_field(field)
         self.data.update({field.type_of_field(): list_fields})
 
-        # if not self.fields.get(field.type_of_field()):
-        #     self.fields.update({field.type_of_field(): [field]})
-        
-        # else:
-        #     self.fields[field.type_of_field()].append(field)
-
-    def change_field(self, type_field: str, number_in_list: int, new_field: str):
+    def change_field(self, type_field: str, number_in_list: int, new_field: str) -> None:
         self.data[type_field][number_in_list].value = new_field
 
     # def days_to_birthday(self):
