@@ -94,7 +94,7 @@ class ListFields(UserList):
     def add_field(self, field):        
         self.data.append(field)
 
-    def list_values(self) -> list:
+    def list_values(self) -> list[str]:
         return [field.value for field in self.data]
 
     def max_len_value(self) -> int:
@@ -107,10 +107,12 @@ class Record(UserDict):
 
     def __init__(self, name: Name):
         super().__init__()
+
+        self.name = name
         
-        list_fields = ListFields(name.type_of_field())
-        list_fields.add_field(name)
-        self.data.update({name.type_of_field(): list_fields})
+        # list_fields = ListFields(name.type_of_field())
+        # list_fields.add_field(name)
+        # self.data.update({name.type_of_field(): list_fields})
 
     def add_field(self, field: Field) -> None:
 
@@ -133,16 +135,11 @@ class Record(UserDict):
 
         return (birthday - now_date).days + 1
 
-    def max_len_value(self) -> int:
-        return max([list_fields.max_len_value() for list_fields in self.values()])
+    def list_len_cells(self) -> list[int]:
+        return [list_fields.max_len_value() for list_fields in self.values()]
 
-    def types_of_fields(self) -> list:
-
-        fields = []
-
-        for type_of_field in self.data:
-            fields += ["№", type_of_field]
-        
+    def types_of_fields(self) -> list[str]:
+        fields = [type_of_field for type_of_field in self.data]
         return fields
 
     def remove_field(self, number_in_list: int, type_field: str):
@@ -150,18 +147,20 @@ class Record(UserDict):
 
 
 # name = Name("alex")
-# print(Field.list_fields)
-# print(Field.list_fields)
-# name = Name("alex")
-# print(name.value)
+# # print(Field.list_fields)
+# # print(Field.list_fields)
+# # name = Name("alex")
+# # print(name.value)
 # phone = Phone("+380509228157")
-# list_filds = ListFields(phone.type_of_field())
-# # list_filds.add_field(phone)
-# # print(list_filds.type_of_field)
+# # list_filds = ListFields(phone.type_of_field())
+# # # list_filds.add_field(phone)
+# # # print(list_filds.type_of_field)
 # record = Record(name)
-# print(record.data)
+# # print(record.data)
 # phone1 = Phone("+380509228156")
 # record.add_field(phone)
+# record.add_field(phone1)
+# print(record.get_contact())
 # email = Email("alex_kondr@outlook.com")
 # record.add_field(email)
 # print(record.max_len_value())
