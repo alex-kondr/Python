@@ -36,6 +36,12 @@ class Add(Action):
             f"the user '{name}' in the phone book."
 
 
+class Change(Action): ...
+
+
+class Del(Action): ...
+
+
 class Show(Action):
 
     def execute(self, name, *_):

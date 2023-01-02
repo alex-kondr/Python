@@ -97,6 +97,11 @@ class ListFields(UserList):
     def list_values(self) -> list:
         return [field.value for field in self.data]
 
+    def max_len_value(self) -> int:
+        len_values = [len(field.value) for field in self.data]
+
+        return max(len_values)
+
 
 class Record(UserDict):
 
@@ -126,7 +131,10 @@ class Record(UserDict):
         now_date = datetime.now()
         birthday = birthday[0].birthday.replace(year=now_date.year)
 
-        return (birthday - now_date).days + 1    
+        return (birthday - now_date).days + 1
+
+    def max_len_value(self) -> int:
+        return max([list_fields.max_len_value() for list_fields in self.values()])
 
     def types_of_fields(self) -> list:
 
@@ -147,14 +155,16 @@ class Record(UserDict):
 # name = Name("alex")
 # print(name.value)
 # phone = Phone("+380509228157")
-# # list_filds = ListFields(phone.type_of_field())
+# list_filds = ListFields(phone.type_of_field())
 # # list_filds.add_field(phone)
 # # print(list_filds.type_of_field)
 # record = Record(name)
 # print(record.data)
 # phone1 = Phone("+380509228156")
 # record.add_field(phone)
-# print(record.data)
+# email = Email("alex_kondr@outlook.com")
+# record.add_field(email)
+# print(record.max_len_value())
 # record.add_field(phone1)
 # print(record.data)
 

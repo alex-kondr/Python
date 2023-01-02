@@ -6,6 +6,15 @@ from fields import *
 
 class Table(ABC):
 
+    def __init__(self, record: Record) -> None:
+        self.record = record
+        # max_len_value = record.max_len_value()
+
+        for list_fields in record.values():
+            
+
+        self.columns = "\n" + "|{:^3}|{:^{k}}" * (len(self.record.types_of_fields()) // 2) + "|"
+
     @abstractmethod
     def create_table(self):
         pass
