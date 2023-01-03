@@ -49,9 +49,9 @@ class Birthday(Field):
     #     return self.birthday
 
     @Field.value.setter
-    def value(self, data: str):
+    def value(self, value: str):
 
-        birthday = re.search(r"\d{2}\.\d{2}.\d{4}", data)
+        birthday = re.search(r"\d{2}\.\d{2}.\d{4}", value)
 
         if not birthday:
             raise ValueError("Birthday not valid.\n"
@@ -129,7 +129,12 @@ class Record(UserDict):
         super().__init__()
         self.name = name
 
-    def add_field(self, field: Field) -> None:
+    def add_field(self, field: Field) -> None|str:
+
+        if (field.type_of_field() == "Birthday" and 
+                self.data.get("Birthday")):
+
+            raise ValueError("A birthday has already been added to this contact")          
 
         list_fields = self.data.get(field.type_of_field(), ListFields(field.type_of_field()))
         list_fields.add_field(field)

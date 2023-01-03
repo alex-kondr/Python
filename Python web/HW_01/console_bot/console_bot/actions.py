@@ -31,12 +31,13 @@ class Action(ABC):
 class Add(Action):
 
     def execute(self, name, type_field, value):
+
         new_field = Field.list_type_fields[type_field](value)
         record = ADDRESS_BOOK.data.get(name, Record(Name(name)))
         record.add_field(new_field)
         ADDRESS_BOOK.add_record(record)
 
-        return f"The contact type {type_field} value {value} is added to "\
+        return f"The contact type '{type_field}' value '{value}' is added to "\
             f"the user '{name}' in the phone book."
 
 
@@ -91,13 +92,13 @@ class Del(Action):
 
 class Birthday(Action):
 
-    def execute(self, __, name, *_):
+    def execute(self, __, name, *_) -> str:
         record = ADDRESS_BOOK.get_contact(name.title())
 
         if not record:
             return f"The contact {name.title()} not found"
 
-        return record.days_to_birthday()
+        return f"The contact '{name.title()}' will be celebrating a birthday through {record.days_to_birthday()} days"
 
 
 class GoodBye(Close, Action): ...
