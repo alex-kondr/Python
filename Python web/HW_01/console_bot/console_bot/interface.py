@@ -1,54 +1,52 @@
 from abc import ABC, abstractmethod
 from termcolor import colored
 
-from fields import Record
-
 
 class Table(ABC):
 
     @abstractmethod
-    def header(): ...
+    def header() -> str: ...
 
     @abstractmethod
-    def table(): ...
+    def table() -> str: ...
 
 
-class TableForRecord(Table):
+class TableForAddresBook(Table):
 
-    def __init__(self, record: Record) -> None:
-        self.record = record
-        self.headers = record.types_of_fields()
-        self.len_cells = self.record.list_len_cells()
+    def __init__(self, address_book) -> None:
+
+        self.address_book = address_book
+        self.max_cell_len = max([max(record.list_len_cells())
+                             for record in self.address_book.data.values()])
+        self.template = "\n|{:^3}|{:^13}|{:^3}|{:^13}|{:^3}| {:^{max_cell_len}} |"
         self.dividing_line = ""
+        
+    
+    def header(self) -> str:
 
-    def header(self):
-        columns = "\n"
+        headers = ["№", "User", "№", "Type", "№", "Value"]
+        header = self.template.format(
+            *headers, max_cell_len=self.max_cell_len)
+        self.dividing_line = "\n|" + "-" * (len(header) - 3) + "|"
 
-        for i, head in enumerate(self.headers):
-            columns += f"| {head:^{self.len_cells[i]}} "
+        return self.dividing_line + header + self.dividing_line
 
-        columns += "|"
-        self.dividing_line = "\n|" + "-" * (len(columns) - 3) + "|"
-
-        return self.dividing_line + columns + self.dividing_line
-
-    def table(self):
+    def table(self) -> str:
 
         table = ""
-        all_table = [list_fields.list_values() for list_fields in self.record.values()]
-        max_len_table = len(max(all_table, key=lambda table: len(table)))
 
-        for i in range(max_len_table):
-            table += "\n"
+        for i, (name, record) in enumerate(self.address_book.data.items()):
+            for j, (type_field, fields) in enumerate(record.data.items()):
+                for k, field in enumerate(fields):
 
-            for j, item in enumerate(all_table):
+                    table += self.template.format(
+                        i, name, j, type_field, k, field.value, max_cell_len=self.max_cell_len)
 
-                item = item[i] if i < len(item) else ""
-                table += f"| {item:^{self.len_cells[j]}} "
+                    i, j, name, type_field = "", "", "", ""
 
-            table += "|"
+            table += self.dividing_line
 
-        return table + self.dividing_line
+        return table
 
     
 

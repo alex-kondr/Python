@@ -40,9 +40,13 @@ class Address(Field):
 
 class Birthday(Field):
 
-    def __init__(self, value):
-        super().__init__(value)
-        self.birthday = None
+    # def __init__(self, value):
+    #     super().__init__(value)
+    #     self.birthday = None
+
+    # @property
+    # def birthday(self):
+    #     return self.birthday
 
     @Field.value.setter
     def value(self, data: str):
@@ -54,8 +58,10 @@ class Birthday(Field):
                 "The Birthday should look like '01.01.1900'")
 
         self._value = birthday.group()
-        self.birthday = datetime.strptime(birthday.group(), "%d.%m.%Y")
-        
+        # self.birthday = datetime.strptime(birthday.group(), "%d.%m.%Y")
+
+        # print("self.value: ", self.value)
+        # print("self.birthday: ", self.birthday)
 
 
 class Email(Field):
@@ -72,6 +78,13 @@ class Name(Field):
         self._value = value
 
 
+class Note(Field):
+
+    @Field.value.setter
+    def value(self, value: str):
+        self._value = value
+
+
 class Phone(Field):
 
     @Field.value.setter
@@ -83,6 +96,13 @@ class Phone(Field):
                 "The phone number should look like +380123456789")
         
         self._value = new_phone.group()
+
+
+class Tag(Field):
+
+    @Field.value.setter
+    def value(self, value: str):
+        self._value = value
 
 
 class ListFields(UserList):
@@ -107,12 +127,7 @@ class Record(UserDict):
 
     def __init__(self, name: Name):
         super().__init__()
-
         self.name = name
-        
-        # list_fields = ListFields(name.type_of_field())
-        # list_fields.add_field(name)
-        # self.data.update({name.type_of_field(): list_fields})
 
     def add_field(self, field: Field) -> None:
 
@@ -125,15 +140,26 @@ class Record(UserDict):
 
     def days_to_birthday(self):
 
-        birthday = self.data.get("Birthday")
+        birthday = self.get_values("Birthday")
 
         if not birthday:
             raise ValueError("Birthday not specified")
 
         now_date = datetime.now()
-        birthday = birthday[0].birthday.replace(year=now_date.year)
+        birthday = datetime.strptime(birthday[0], "%d.%m.%Y")
+
+        birthday = birthday.replace(
+            year=now_date.year) if birthday.month > now_date.month else birthday.replace(year=now_date.year+1)
 
         return (birthday - now_date).days + 1
+
+    def get_values(self, type_field: str) -> list[str]:
+        list_fields = self.data.get(type_field)
+
+        if not list_fields:
+            raise ValueError("This contact not specified field {type_field}")
+        
+        return list_fields.list_values()
 
     def list_len_cells(self) -> list[int]:
         return [list_fields.max_len_value() for list_fields in self.values()]
@@ -142,7 +168,7 @@ class Record(UserDict):
         fields = [type_of_field for type_of_field in self.data]
         return fields
 
-    def remove_field(self, number_in_list: int, type_field: str):
+    def remove_field(self, number_in_list: int, type_field: str) -> str:
         return self.data[type_field].pop(number_in_list)
 
 
