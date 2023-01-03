@@ -40,14 +40,6 @@ class Address(Field):
 
 class Birthday(Field):
 
-    # def __init__(self, value):
-    #     super().__init__(value)
-    #     self.birthday = None
-
-    # @property
-    # def birthday(self):
-    #     return self.birthday
-
     @Field.value.setter
     def value(self, value: str):
 
@@ -58,17 +50,20 @@ class Birthday(Field):
                 "The Birthday should look like '01.01.1900'")
 
         self._value = birthday.group()
-        # self.birthday = datetime.strptime(birthday.group(), "%d.%m.%Y")
-
-        # print("self.value: ", self.value)
-        # print("self.birthday: ", self.birthday)
 
 
 class Email(Field):
 
     @Field.value.setter
     def value(self, value: str):
-        self._value = value
+
+        email = re.search(r"\.+@\.+", value)
+
+        if not email:
+            raise ValueError("Email not valid.\n"
+                    "The Email should look like 'mike@host.com'")
+
+        self._value = email.group()
 
 
 class Name(Field):
@@ -88,8 +83,8 @@ class Note(Field):
 class Phone(Field):
 
     @Field.value.setter
-    def value(self, phone: str):
-        new_phone = re.search(r"\+380\d{9}", phone)
+    def value(self, value: str):
+        new_phone = re.search(r"\+380\d{9}", value)
 
         if not new_phone:
             raise ValueError("Phone number not valid.\n"\
@@ -102,7 +97,16 @@ class Tag(Field):
 
     @Field.value.setter
     def value(self, value: str):
-        self._value = value
+
+
+        tag = re.search(r"#.+", value)
+        print(tag, value)
+
+        if not tag:
+            raise ValueError("Tag not valid.\n"\
+                "The tag must be start '#'")
+
+        self._value = tag.group()
 
 
 class ListFields(UserList):
@@ -175,29 +179,3 @@ class Record(UserDict):
 
     def remove_field(self, number_in_list: int, type_field: str) -> str:
         return self.data[type_field].pop(number_in_list)
-
-
-# name = Name("alex")
-# # print(Field.list_fields)
-# # print(Field.list_fields)
-# # name = Name("alex")
-# # print(name.value)
-# phone = Phone("+380509228157")
-# # list_filds = ListFields(phone.type_of_field())
-# # # list_filds.add_field(phone)
-# # # print(list_filds.type_of_field)
-# record = Record(name)
-# # print(record.data)
-# phone1 = Phone("+380509228156")
-# record.add_field(phone)
-# record.add_field(phone1)
-# print(record.get_contact())
-# email = Email("alex_kondr@outlook.com")
-# record.add_field(email)
-# print(record.max_len_value())
-# record.add_field(phone1)
-# print(record.data)
-
-# list_fields = record.data.get(phone.type_of_field())
-# for field in list_fields.data:
-#     print(field.value)
