@@ -30,7 +30,13 @@ class Action(ABC):
 
 class Add(Action):
 
-    def execute(self, name, type_field, value):
+    def execute(self, name, type_field, value) -> str:
+
+        find = Find()
+        find = find.execute("", value, "")
+
+        if isinstance(find, AddressBook) and find.get_contact(name):
+            return f"The contact '{name}' already have value '{value}'"
 
         new_field = Field.list_type_fields[type_field](value)
         record = ADDRESS_BOOK.data.get(name, Record(Name(name)))
@@ -69,6 +75,14 @@ class Close(Action):
         print("Good bye.")
         quit()
 
+class Clear(Action):
+
+    def execute(self, name, type_field, value) -> str:
+        ADDRESS_BOOK.clear_address_book()
+
+        return "The address book is cleared"
+
+
 class Del(Action):
 
     def execute(self, name, type_field, *_) -> str:
@@ -101,15 +115,48 @@ class Birthday(Action):
         return f"The contact '{name.title()}' will be celebrating a birthday through {record.days_to_birthday()} days"
 
 
+class Find(Action):
+
+    def execute(self, __, data: str, *_) -> AddressBook|str:
+        address_book = AddressBook()
+        
+        for name, record in ADDRESS_BOOK.data.items():
+            for list_fields in record.data.values():
+                for value in list_fields.list_values():
+                    if (data.lower() in value.lower() or
+                        data.lower() in name.lower()):
+
+                        address_book.add_record(record)
+
+        if not address_book.data:
+            return f"There is no contact with such data '{data}' in the addres book"
+
+        return address_book
+
+
 class GoodBye(Close, Action): ...
 
 
 class Exit(Close, Action): ...
 
 
+class RemoveContact(Action):
+
+    def execute(self, name, *_) -> str:
+        ADDRESS_BOOK.remove_contact(name)
+
+        return f"The contact '{name}' has been deleted"
+
+
+class ShowAll(Action):
+
+    def execute(self, *_) -> AddressBook:
+        return ADDRESS_BOOK
+
+
 class ShowContact(Action):
 
-    def execute(self, name, *_):
+    def execute(self, name, *_) -> AddressBook|str:
 
         record = ADDRESS_BOOK.get_contact(name)
 
@@ -117,17 +164,9 @@ class ShowContact(Action):
             return f"The contact {name.title()} not found"
 
         address_book = AddressBook()
-        address_book.add_record(record)
-        table = TableForAddresBook(address_book)        
+        address_book.add_record(record)      
 
-        return table.header() + table.table()
-
-class ShowAll(Action):
-
-    def execute(self, *_):
-        table = TableForAddresBook(ADDRESS_BOOK)
-
-        return table.header() + table.table()
+        return address_book
 
 
 def load_data(file, default=AddressBook()) -> AddressBook:
