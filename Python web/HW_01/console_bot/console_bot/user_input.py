@@ -16,8 +16,8 @@ def user_input(user_txt):
                 }
             })
         
-        elif action == "find":
-            list_command.update({"find": None})
+        elif action == "find" or action == "birthdays":
+            list_command.update({action: None})
 
         else:
             list_command.update({

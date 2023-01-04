@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from termcolor import colored
 
 
 class Table(ABC):
@@ -47,27 +46,3 @@ class TableForAddresBook(Table):
             table += self.dividing_line
 
         return table
-
-    
-
-
-
-# name = Name("alex")
-# record = Record(name)
-# phone = Phone("+380121234556")
-# phone1 = Phone("+380121234557")
-# birth = Birthday("01.01.1988")
-# record.add_field(birth)
-# record.add_field(phone)
-# record.add_field(phone1)
-
-# email = Email("alex_kondr@outlook.com")
-# record.add_field(email)
-
-# # print(record.types_of_fields())
-# # header = Header(record)
-# # print(header.create_line())
-# table = TableForRecord(record)
-# line = table.header() + table.table()
-
-# print(line)

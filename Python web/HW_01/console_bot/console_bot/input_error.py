@@ -1,3 +1,5 @@
+from termcolor import colored
+
 def input_error(func):
     def inner(*args) -> str:
 
@@ -7,16 +9,16 @@ def input_error(func):
             message += str(func(*args))
 
         except IndexError as error:
-            message += str(error)    
+            message += colored(str(error), "red")
 
         except KeyError:
-            message += "\nThis name not exists.\n"
+            message += colored("\nThis name not exists.\n", "red")
 
         except TypeError as error:
-            message += str(error)
+            message += colored(str(error), "red")
 
         except ValueError as error:
-            message += str(error)
+            message += colored(str(error), "red")
         
         message += "\n" + "-" * 55 + "\n"
 

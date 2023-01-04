@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-import pickle
-import re
+import pickle, re
+from termcolor import colored
 
 from address_book import AddressBook
 from fields import Field, Name, Record
@@ -36,15 +36,45 @@ class Add(Action):
         find = find.execute("", value, "")
 
         if isinstance(find, AddressBook) and find.get_contact(name):
-            return f"The contact '{name}' already have value '{value}'"
+            return colored(f"The contact '{name}' already have value '{value}'", "magenta")
 
         new_field = Field.list_type_fields[type_field](value)
         record = ADDRESS_BOOK.data.get(name, Record(Name(name)))
         record.add_field(new_field)
         ADDRESS_BOOK.add_record(record)
 
-        return f"The contact type '{type_field}' value '{value}' is added to "\
-            f"the user '{name}' in the phone book."
+        return colored(f"The contact type '{type_field}' value '{value}' is added to "\
+            f"the user '{name}' in the phone book.", "green")
+
+
+class Birthday(Action):
+
+    @input_error
+    def execute(self, __, name: str, *_) -> str:
+        record = ADDRESS_BOOK.get_contact(name.title())
+
+        if not record:
+            return colored(f"The contact {name.title()} not found", "magenta")
+
+        return colored(f"The contact '{name.title()}' will be celebrating a birthday"
+                       f" through {record.days_to_birthday()} days", "green")
+
+
+class Birthdays(Action):
+
+    @input_error
+    def execute(self, __, days: str, *_) -> AddressBook|str:
+        address_book = AddressBook()
+
+        for record in ADDRESS_BOOK.data.values():
+            if record.days_to_birthday() < int(days):
+                address_book.add_record(record)
+
+        if not address_book.data:
+            return colored("There are no contacts who celebrate"
+                f" a birthday in the following '{days}' days", "magenta")
+
+        return address_book
 
 
 class Change(Action):
@@ -54,28 +84,20 @@ class Change(Action):
         record = ADDRESS_BOOK.get_contact(name)
 
         if not record:
-            return f"The contact {name} not found"
+            return colored(f"The contact {name} not found", "magenta")
 
         values = record.get_values(type_field.title())
 
         for i, val in enumerate(values):
-            print(f"{i}: {val}")
+            print(colored(f"\n{i}: {val}", "green"))
 
         number = int(
-            input("Select the number in the order you want to change: "))
+            input(colored("Select the number in the order you want to change: ", "yellow")))
 
         record.change_field(type_field.title(), number, value)
 
-        return f"User '{name}' changed {type_field} on address book."
+        return colored(f"User '{name}' changed {type_field} on address book.", "green")
 
-
-class Close(Action):
-
-    @input_error
-    def execute(self, *_):
-        ADDRESS_BOOK.save_data(FILE)
-        print("Good bye.")
-        quit()
 
 class Clear(Action):
     
@@ -83,7 +105,16 @@ class Clear(Action):
     def execute(self, *_) -> str:
         ADDRESS_BOOK.clear_address_book()
 
-        return "The address book is cleared"
+        return colored("The address book is cleared", "green")
+
+
+class Close(Action):
+
+    @input_error
+    def execute(self, *_):
+        ADDRESS_BOOK.save_data(FILE)
+        print(colored("Good bye.", "cyan"))
+        quit()
 
 
 class Del(Action):
@@ -93,31 +124,19 @@ class Del(Action):
         record = ADDRESS_BOOK.get_contact(name)
 
         if not record:
-            return f"The contact {name} not found"
+            return colored(f"The contact {name} not found", "magenta")
 
         values = record.get_values(type_field.title())
 
         for i, val in enumerate(values):
-            print(f"\n{i}: {val}\n")
+            print(colored(f"\n{i}: {val}", "green"))
 
         number = int(
-            input("Select the number in the order you want to change: "))
+            input(colored("Select the number in the order you want to change: ", "yellow")))
 
         field = record.remove_field(number, type_field.title())
 
-        return f"\nIn user '{name}' deleted {type_field} '{field.value}' on address book." #type: ignore
-
-
-class Birthday(Action):
-    
-    @input_error
-    def execute(self, __, name: str, *_) -> str:
-        record = ADDRESS_BOOK.get_contact(name.title())
-
-        if not record:
-            return f"The contact {name.title()} not found"
-
-        return f"The contact '{name.title()}' will be celebrating a birthday through {record.days_to_birthday()} days"
+        return colored(f"\nIn user '{name}' deleted {type_field} '{field.value}' on address book.", "green") #type: ignore
 
 
 class Exit(Close, Action): ...
@@ -138,7 +157,7 @@ class Find(Action):
                         address_book.add_record(record)
 
         if not address_book.data:
-            return f"There is no contact with such data '{data}' in the addres book"
+            return colored(f"There is no contact with such data '{data}' in the addres book", "magenta")
 
         return address_book
 
@@ -149,15 +168,18 @@ class GoodBye(Close, Action): ...
 class Help(Action):
 
     @input_error
-    def execute(self, *_):
-        # list_command = [action for action in Action.list_actions]
-        message = "List "
+    def execute(self, *_) -> str:
+        message = "\nThis bot following commands for the address book:\n\n"
 
-        for action in Action.list_actions:
-            message += 
+        for i, action in enumerate(Action.list_actions):
+            message += f"{i}: {action}"
 
+        message += "\nAlso, each contact have such fields:\n\n"
 
-        return list_command
+        for i, field in enumerate(Field.list_type_fields):
+            message += f"{i}: {field}\n"
+
+        return colored(message, "cyan")
 
 
 class RemoveContact(Action):
@@ -166,7 +188,7 @@ class RemoveContact(Action):
     def execute(self, name: str, *_) -> str:
         ADDRESS_BOOK.remove_contact(name)
 
-        return f"The contact '{name}' has been deleted"
+        return colored(f"The contact '{name}' has been deleted", "green")
 
 
 class ShowAll(Action):

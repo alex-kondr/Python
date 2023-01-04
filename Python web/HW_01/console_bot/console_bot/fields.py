@@ -159,9 +159,6 @@ class Record(UserDict):
 
         birthday = self.get_values("Birthday")
 
-        # if not birthday:
-        #     raise ValueError("Birthday not specified")
-
         now_date = datetime.now()
         birthday = datetime.strptime(birthday[0], "%d.%m.%Y")
 
