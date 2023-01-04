@@ -6,7 +6,6 @@ import re
 from address_book import AddressBook
 from fields import Field, Name, Record
 from input_error import input_error
-from interface import TableForAddresBook
 
 
 FILE = Path("address_book.bin")
@@ -23,14 +22,15 @@ class Action(ABC):
         Action.list_actions.update(
             {" ".join(cls_name).lower(): cls}
         )
-
-    @abstractmethod
-    def execute(self, name, type_field, value) -> str: ...
+    
+    @abstractmethod    
+    def execute(self, name: str, type_field: str, value: str) -> str: ...
 
 
 class Add(Action):
 
-    def execute(self, name, type_field, value) -> str:
+    @input_error
+    def execute(self, name: str, type_field: str, value: str) -> str:
 
         find = Find()
         find = find.execute("", value, "")
@@ -49,7 +49,8 @@ class Add(Action):
 
 class Change(Action):
 
-    def execute(self, name, type_field, value) -> str:
+    @input_error
+    def execute(self, name: str, type_field: str, value: str) -> str:
         record = ADDRESS_BOOK.get_contact(name)
 
         if not record:
@@ -70,14 +71,16 @@ class Change(Action):
 
 class Close(Action):
 
+    @input_error
     def execute(self, *_):
         ADDRESS_BOOK.save_data(FILE)
         print("Good bye.")
         quit()
 
 class Clear(Action):
-
-    def execute(self, name, type_field, value) -> str:
+    
+    @input_error
+    def execute(self, *_) -> str:
         ADDRESS_BOOK.clear_address_book()
 
         return "The address book is cleared"
@@ -85,7 +88,8 @@ class Clear(Action):
 
 class Del(Action):
 
-    def execute(self, name, type_field, *_) -> str:
+    @input_error
+    def execute(self, name: str, type_field: str, *_) -> str:
         record = ADDRESS_BOOK.get_contact(name)
 
         if not record:
@@ -105,8 +109,9 @@ class Del(Action):
 
 
 class Birthday(Action):
-
-    def execute(self, __, name, *_) -> str:
+    
+    @input_error
+    def execute(self, __, name: str, *_) -> str:
         record = ADDRESS_BOOK.get_contact(name.title())
 
         if not record:
@@ -115,8 +120,12 @@ class Birthday(Action):
         return f"The contact '{name.title()}' will be celebrating a birthday through {record.days_to_birthday()} days"
 
 
+class Exit(Close, Action): ...
+
+
 class Find(Action):
 
+    @input_error
     def execute(self, __, data: str, *_) -> AddressBook|str:
         address_book = AddressBook()
         
@@ -137,12 +146,24 @@ class Find(Action):
 class GoodBye(Close, Action): ...
 
 
-class Exit(Close, Action): ...
+class Help(Action):
+
+    @input_error
+    def execute(self, *_):
+        # list_command = [action for action in Action.list_actions]
+        message = "List "
+
+        for action in Action.list_actions:
+            message += 
+
+
+        return list_command
 
 
 class RemoveContact(Action):
 
-    def execute(self, name, *_) -> str:
+    @input_error
+    def execute(self, name: str, *_) -> str:
         ADDRESS_BOOK.remove_contact(name)
 
         return f"The contact '{name}' has been deleted"
@@ -150,13 +171,15 @@ class RemoveContact(Action):
 
 class ShowAll(Action):
 
+    @input_error
     def execute(self, *_) -> AddressBook:
         return ADDRESS_BOOK
 
 
 class ShowContact(Action):
 
-    def execute(self, name, *_) -> AddressBook|str:
+    @input_error
+    def execute(self, name: str, *_) -> AddressBook|str:
 
         record = ADDRESS_BOOK.get_contact(name)
 
@@ -169,23 +192,13 @@ class ShowContact(Action):
         return address_book
 
 
-def load_data(file, default=AddressBook()) -> AddressBook:
+def load_data(file) -> AddressBook:
 
     if not file.exists():
-        return default
+        return AddressBook()
 
     with open(file, "rb") as fh:
         return pickle.load(fh)
 
 
 ADDRESS_BOOK = load_data(FILE)
-
-# command = "add".lower()
-# type_field = "phone".lower()
-# name = "alex"
-# value = "+380509228157"
-
-# action = Action.list_actions.get(command)()
-# # print(action)
-# print(action.execute(name, type_field, value))
-# print(ADDRESS_BOOK.data)

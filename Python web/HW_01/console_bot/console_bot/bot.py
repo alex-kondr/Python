@@ -1,14 +1,13 @@
-from actions import Action, ADDRESS_BOOK
-# from interface import Header, TableForContact
-# from fields import Record, Name
+from actions import Action
+from user_input import user_input
 
 
 def main():
 
     while True:
 
-        data = input("\nPlease enter your command: ")
-        list_input_command = data.split()
+        data = user_input("\nPlease enter your command: ")
+        list_input_command = data.strip().split()
 
         while len(list_input_command) < 4:
             list_input_command += [""]
@@ -32,10 +31,12 @@ def main():
             # print(action)
 
         else:
-            print("Unknow command")
+            print("Enter valid command.\n"
+                  "Please enter help for more information.")
             continue
 
         # print("name_bot: ", name)
+        
         print(action.execute(name, type_field, " ".join(value)))
         # record = ADDRESS_BOOK.data.get(name, Record(Name(name)))
 

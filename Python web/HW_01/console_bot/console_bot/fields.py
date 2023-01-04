@@ -66,9 +66,17 @@ class Email(Field):
         self._value = email.group()
 
 
-class Name(Field):
+class Name:
+
+    def __init__(self, value):
+        self._value = None
+        self.value = value
+
+    @property
+    def value(self):
+        return self._value
     
-    @Field.value.setter
+    @value.setter
     def value(self, value: str):
         self._value = value
 
@@ -151,8 +159,8 @@ class Record(UserDict):
 
         birthday = self.get_values("Birthday")
 
-        if not birthday:
-            raise ValueError("Birthday not specified")
+        # if not birthday:
+        #     raise ValueError("Birthday not specified")
 
         now_date = datetime.now()
         birthday = datetime.strptime(birthday[0], "%d.%m.%Y")
@@ -166,7 +174,7 @@ class Record(UserDict):
         list_fields = self.data.get(type_field)
 
         if not list_fields:
-            raise ValueError("This contact not specified field {type_field}")
+            raise ValueError(f"This contact not specified field '{type_field}'")
         
         return list_fields.list_values()
 
