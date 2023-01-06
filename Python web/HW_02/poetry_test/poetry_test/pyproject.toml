@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "poetry-test"
+version = "0.1.0"
+description = ""
+authors = ["Oleksandr Kondratiuk <alex_kondr@outlook.com>"]
+readme = "README.md"
+packages = [{include = "poetry_test"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+termcolor = "^2.2.0"
+prompt-toolkit = "^3.0.36"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
