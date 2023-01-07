@@ -1,6 +1,7 @@
 # Docker-команда FROM вказує базовий образ контейнера
 # Наш базовий образ - це Linux з попередньо встановленим python-3.10
 FROM python:3.10
+#COPY requirements.txt
 
 # Встановимо змінну середовища
 ENV APP_HOME /app
@@ -15,7 +16,7 @@ COPY . .
 RUN pip install -r requirements.txt
 
 # Позначимо порт де працює програма всередині контейнера
-EXPOSE 5000
+#EXPOSE 5000
 
 # Запустимо нашу програму всередині контейнера
-ENTRYPOINT ["python", "console_bot\console_bot\bot.py"]
+ENTRYPOINT ["python", "./console_bot/console_bot/bot.py"]
