@@ -46,6 +46,8 @@ for i in range(1, 5):
 
 iteration(x, 100)
 
+input("Натисніть enter шоб закрити")
+
 
 
 
