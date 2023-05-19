@@ -13,7 +13,6 @@ def deviation(x: tuple, x_next: tuple):
     return max(difference)
 
 
-
 def iteration(x, count_iteration):
     count = 0
     local_x = x
@@ -35,18 +34,19 @@ def iteration(x, count_iteration):
     print(f"Кількість ітерацій: {count}")
 
 
-x = []
+if __name__ == "__main__":
+    x = []
 
-print("Введіть початкові значення xi:")
+    print("Введіть початкові значення xi:")
 
-for i in range(1, 5):
-    xi = float(input(f"x{i}: "))
-    x.append(xi)
+    for i in range(1, 5):
+        xi = float(input(f"x{i}: "))
+        x.append(xi)
 
 
-iteration(x, 100)
+    iteration(x, 100)
 
-input("Натисніть enter шоб закрити")
+    input("Натисніть enter шоб закрити")
 
 
 
