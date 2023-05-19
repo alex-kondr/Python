@@ -106,4 +106,4 @@ fibonacci_(a1, b1)
 fibonacci_(a2, b2)
 fibonacci_(a3, b3)
 
-
+input("Натисніть enter шоб закрити")
