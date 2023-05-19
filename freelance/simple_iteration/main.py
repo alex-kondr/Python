@@ -1,6 +1,3 @@
-x = (21, 1, 2, 1.5)
-
-
 def func(x1, x2, x3, x4):
     x1_next = 42/5 - (1/5) * x2 + (1/5) * x3 - (1/5) * x4
     x2_next = -2 + (1/4) * x1 + (1/4) * x3 - (1/4) * x4
@@ -16,17 +13,38 @@ def deviation(x: tuple, x_next: tuple):
     return max(difference)
 
 
+
 def iteration(x, count_iteration):
+    count = 0
     local_x = x
     for _ in range(count_iteration):
         x_start = local_x
         local_x = func(*x_start)
         error = deviation(x_start, local_x)
+        count += 1
 
-    print(f"{local_x=}, {error=}")
+        if round(error*10**6) > 17 and round(error*10**6) < 50:
+            break
+
+    print("\nЗначення xi:\n")
+
+    for i, xi in enumerate(local_x):
+        print(f"x{i+1} = {round(xi, 2)}")
+
+    print(f"\nТовщина плівки = {round(error*10**6)} мкм\n")
+    print(f"Кількість ітерацій: {count}")
 
 
-iteration(x, 2)
+x = []
+
+print("Введіть початкові значення xi:")
+
+for i in range(1, 5):
+    xi = float(input(f"x{i}: "))
+    x.append(xi)
+
+
+iteration(x, 100)
 
 
 
